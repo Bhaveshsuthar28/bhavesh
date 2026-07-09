@@ -89,6 +89,8 @@ export default function Home() {
     acceptGhostSuggestion,
     executeCommand,
     resetTabCycle,
+    theme,
+    setTheme
   } = useTerminal(triggerImageAnimation, inputRef);
 
   // Focus input on console panel click
@@ -175,11 +177,43 @@ export default function Home() {
         
         {/* Browser Tabs Chrome Bar */}
         <div className="bg-bg-window-chrome border-b border-border-terminal px-4 py-2.5 flex items-center justify-between shrink-0">
-          <div className="flex items-center gap-2 w-1/3">
-            {/* macOS Chrome Dots */}
-            <div className="w-3 h-3 rounded-full bg-[#ff5f56]" />
-            <div className="w-3 h-3 rounded-full bg-[#ffbd2e]" />
-            <div className="w-3 h-3 rounded-full bg-[#27c93f]" />
+          <div className="flex items-center gap-2.5 w-1/3">
+            {/* 5 Theme Switcher Toggle Circles */}
+            <button
+              onClick={() => setTheme("default")}
+              className={`w-3 h-3 rounded-full bg-[#e3a869] transition-all duration-300 transform hover:scale-125 hover:opacity-100 outline-none ${
+                theme === "default" ? "ring-2 ring-white ring-offset-1 ring-offset-bg-window-chrome opacity-100 scale-110" : "opacity-60"
+              }`}
+              title="Default Theme (Slate-Navy)"
+            />
+            <button
+              onClick={() => setTheme("matrix")}
+              className={`w-3 h-3 rounded-full bg-[#33ff33] transition-all duration-300 transform hover:scale-125 hover:opacity-100 outline-none ${
+                theme === "matrix" ? "ring-2 ring-white ring-offset-1 ring-offset-bg-window-chrome opacity-100 scale-110" : "opacity-60"
+              }`}
+              title="Matrix Theme (Hacker Green)"
+            />
+            <button
+              onClick={() => setTheme("dracula")}
+              className={`w-3 h-3 rounded-full bg-[#ff79c6] transition-all duration-300 transform hover:scale-125 hover:opacity-100 outline-none ${
+                theme === "dracula" ? "ring-2 ring-white ring-offset-1 ring-offset-bg-window-chrome opacity-100 scale-110" : "opacity-60"
+              }`}
+              title="Dracula Theme (Vampire Neon)"
+            />
+            <button
+              onClick={() => setTheme("nord")}
+              className={`w-3 h-3 rounded-full bg-[#88c0d0] transition-all duration-300 transform hover:scale-125 hover:opacity-100 outline-none ${
+                theme === "nord" ? "ring-2 ring-white ring-offset-1 ring-offset-bg-window-chrome opacity-100 scale-110" : "opacity-60"
+              }`}
+              title="Nord Theme (Arctic Ice)"
+            />
+            <button
+              onClick={() => setTheme("cyberpunk")}
+              className={`w-3 h-3 rounded-full bg-[#fcee0a] transition-all duration-300 transform hover:scale-125 hover:opacity-100 outline-none ${
+                theme === "cyberpunk" ? "ring-2 ring-white ring-offset-1 ring-offset-bg-window-chrome opacity-100 scale-110" : "opacity-60"
+              }`}
+              title="Cyberpunk Theme (Neon Cyber)"
+            />
           </div>
 
           {/* Browser Tab */}
