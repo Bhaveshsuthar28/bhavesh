@@ -1250,5 +1250,7 @@ export function useTerminal(
     acceptGhostSuggestion,
     executeCommand,
     resetTabCycle,
+    theme,
+    setTheme
   };
 }

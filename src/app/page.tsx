@@ -181,36 +181,36 @@ export default function Home() {
             {/* 5 Theme Switcher Toggle Circles */}
             <button
               onClick={() => setTheme("default")}
-              className={`w-3 h-3 rounded-full bg-[#e3a869] transition-all duration-300 transform hover:scale-125 hover:opacity-100 outline-none ${
-                theme === "default" ? "ring-2 ring-white ring-offset-1 ring-offset-bg-window-chrome opacity-100 scale-110" : "opacity-60"
+              className={`rounded-full bg-[#e3a869] transition-all duration-300 transform hover:scale-110 hover:opacity-100 outline-none flex-shrink-0 ${
+                theme === "default" ? "w-4.5 h-4.5 opacity-100" : "w-3.5 h-3.5 opacity-60"
               }`}
               title="Default Theme (Slate-Navy)"
             />
             <button
               onClick={() => setTheme("matrix")}
-              className={`w-3 h-3 rounded-full bg-[#33ff33] transition-all duration-300 transform hover:scale-125 hover:opacity-100 outline-none ${
-                theme === "matrix" ? "ring-2 ring-white ring-offset-1 ring-offset-bg-window-chrome opacity-100 scale-110" : "opacity-60"
+              className={`rounded-full bg-[#33ff33] transition-all duration-300 transform hover:scale-110 hover:opacity-100 outline-none flex-shrink-0 ${
+                theme === "matrix" ? "w-4.5 h-4.5 opacity-100" : "w-3.5 h-3.5 opacity-60"
               }`}
               title="Matrix Theme (Hacker Green)"
             />
             <button
               onClick={() => setTheme("dracula")}
-              className={`w-3 h-3 rounded-full bg-[#ff79c6] transition-all duration-300 transform hover:scale-125 hover:opacity-100 outline-none ${
-                theme === "dracula" ? "ring-2 ring-white ring-offset-1 ring-offset-bg-window-chrome opacity-100 scale-110" : "opacity-60"
+              className={`rounded-full bg-[#ff79c6] transition-all duration-300 transform hover:scale-110 hover:opacity-100 outline-none flex-shrink-0 ${
+                theme === "dracula" ? "w-4.5 h-4.5 opacity-100" : "w-3.5 h-3.5 opacity-60"
               }`}
               title="Dracula Theme (Vampire Neon)"
             />
             <button
               onClick={() => setTheme("nord")}
-              className={`w-3 h-3 rounded-full bg-[#88c0d0] transition-all duration-300 transform hover:scale-125 hover:opacity-100 outline-none ${
-                theme === "nord" ? "ring-2 ring-white ring-offset-1 ring-offset-bg-window-chrome opacity-100 scale-110" : "opacity-60"
+              className={`rounded-full bg-[#88c0d0] transition-all duration-300 transform hover:scale-110 hover:opacity-100 outline-none flex-shrink-0 ${
+                theme === "nord" ? "w-4.5 h-4.5 opacity-100" : "w-3.5 h-3.5 opacity-60"
               }`}
               title="Nord Theme (Arctic Ice)"
             />
             <button
               onClick={() => setTheme("cyberpunk")}
-              className={`w-3 h-3 rounded-full bg-[#fcee0a] transition-all duration-300 transform hover:scale-125 hover:opacity-100 outline-none ${
-                theme === "cyberpunk" ? "ring-2 ring-white ring-offset-1 ring-offset-bg-window-chrome opacity-100 scale-110" : "opacity-60"
+              className={`rounded-full bg-[#fcee0a] transition-all duration-300 transform hover:scale-110 hover:opacity-100 outline-none flex-shrink-0 ${
+                theme === "cyberpunk" ? "w-4.5 h-4.5 opacity-100" : "w-3.5 h-3.5 opacity-60"
               }`}
               title="Cyberpunk Theme (Neon Cyber)"
             />
