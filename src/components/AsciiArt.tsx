@@ -33,16 +33,31 @@ export function AsciiBanner({ onComplete }: AsciiBannerProps) {
   }, [onComplete]);
 
   return (
-    <pre className="text-ascii-color font-mono text-[6px] sm:text-[9px] md:text-[11px] leading-tight select-none mt-2 overflow-x-auto whitespace-pre font-bold">
-      {bannerLines.slice(0, linesCount).join("\n")}
-      {linesCount < bannerLines.length && (
-        <span className="terminal-block-cursor ml-1"></span>
-      )}
-    </pre>
+    <div className="relative">
+      <pre 
+        style={{
+          backgroundImage: "linear-gradient(90deg, #e3a869, #8fd08a)",
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          backgroundClip: "text"
+        }}
+        className="font-mono text-[6px] sm:text-[9px] md:text-[11px] leading-tight select-none mt-2 overflow-x-auto whitespace-pre font-bold"
+      >
+        {bannerLines.slice(0, linesCount).join("\n")}
+        {linesCount < bannerLines.length && (
+          <span 
+            style={{ 
+              WebkitTextFillColor: "initial",
+              background: "#e3a869"
+            }}
+            className="terminal-block-cursor ml-1 inline-block w-1.5 h-3 align-middle"
+          ></span>
+        )}
+      </pre>
+    </div>
   );
 }
 
 export default function AsciiArt() {
   return <AsciiBanner />;
 }
-
