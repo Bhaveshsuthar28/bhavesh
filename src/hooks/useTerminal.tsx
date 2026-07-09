@@ -88,7 +88,16 @@ export function useTerminal(
       return;
     }
 
-    const trimmed = input.toLowerCase();
+    const segments = input.split(";");
+    const activeSegment = segments[segments.length - 1];
+    const activeTrimmed = activeSegment.trimStart();
+
+    if (!activeTrimmed) {
+      setGhostText("");
+      return;
+    }
+
+    const trimmed = activeTrimmed.toLowerCase();
     const args = trimmed.split(/\s+/);
     const cmd = args[0];
 
@@ -178,13 +187,16 @@ export function useTerminal(
     const isFirstTab = tabSuggestions.length === 0;
 
     let targetInput = isFirstTab ? input : tabOriginalInput;
-    const trimmed = targetInput.toLowerCase();
+    const segments = targetInput.split(";");
+    const activeSegment = segments[segments.length - 1];
+    const activeTrimmed = activeSegment.trimStart();
+    const trimmed = activeTrimmed.toLowerCase();
     const args = trimmed.split(/\s+/);
     const cmd = args[0];
 
     let matches: string[] = [];
     let isCommandAutocomplete = args.length === 1 && !trimmed.endsWith(" ");
-    let isCdAutocomplete = (cmd === "cd" && args.length === 2) || (cmd === "cd" && args.length === 1 && targetInput.endsWith(" "));
+    let isCdAutocomplete = (cmd === "cd" && args.length === 2) || (cmd === "cd" && args.length === 1 && activeSegment.endsWith(" "));
 
     if (isCommandAutocomplete) {
       const avail = getCommandsForContext();
@@ -213,16 +225,25 @@ export function useTerminal(
   };
 
   const applyTabSuggestion = (original: string, suggestion: string, isCmd: boolean) => {
-    let completed = "";
+    const segments = original.split(";");
+    const activeSegment = segments[segments.length - 1];
+    const leadingSpaces = activeSegment.match(/^\s*/)?.[0] || "";
+    const activeTrimmed = activeSegment.trimStart();
+    
+    let completedActive = "";
     if (isCmd) {
-      completed = suggestion;
+      completedActive = suggestion;
     } else {
-      const parts = original.split(/\s+/);
-      completed = `${parts[0]} ${suggestion}`;
+      const parts = activeTrimmed.split(/\s+/);
+      completedActive = `${parts[0]} ${suggestion}`;
     }
-    setInput(completed);
-    setCaretIndex(completed.length);
-    setNativeCursor(completed.length);
+    
+    segments[segments.length - 1] = leadingSpaces + completedActive;
+    const completedLine = segments.join(";");
+
+    setInput(completedLine);
+    setCaretIndex(completedLine.length);
+    setNativeCursor(completedLine.length);
   };
 
   const executeCommand = (commandLine: string) => {
