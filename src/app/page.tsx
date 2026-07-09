@@ -13,6 +13,7 @@ import {
 import { TbGitBranch } from "react-icons/tb";
 import { useTerminal } from "@/hooks/useTerminal";
 import PixelatedImage from "@/components/PixelatedImage";
+import TypewriterContainer from "@/components/TypewriterContainer";
 
 export default function Home() {
   const [imageTrigger, setImageTrigger] = useState(0);
@@ -257,7 +258,7 @@ export default function Home() {
                   {/* Stderr/Stdout Print block */}
                   {entry.output && (
                     <div className="text-text-primary text-xs leading-relaxed">
-                      {entry.output}
+                      <TypewriterContainer>{entry.output}</TypewriterContainer>
                     </div>
                   )}
                 </div>

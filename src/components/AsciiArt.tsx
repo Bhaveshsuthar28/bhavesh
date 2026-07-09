@@ -33,7 +33,7 @@ export function AsciiBanner({ onComplete }: AsciiBannerProps) {
   }, [onComplete]);
 
   return (
-    <div className="relative">
+    <div className="relative" data-bypass-typewriter="true">
       <pre 
         style={{
           backgroundImage: "linear-gradient(90deg, var(--accent-amber), var(--accent-green))",
