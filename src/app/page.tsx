@@ -185,7 +185,12 @@ export default function Home() {
 
           <div className="w-1/3 text-right">
             {isImageVisible ? (
-              <span className="text-[10px] text-text-muted font-mono hidden sm:inline">localhost:3000</span>
+              <button 
+                onClick={() => setIsImageVisible(false)} 
+                className="text-text-muted hover:text-terminal-red text-[10px] font-bold font-mono cursor-pointer"
+              >
+                ➜ Hide Feed
+              </button>
             ) : (
               <button 
                 onClick={() => setIsImageVisible(true)} 

@@ -197,6 +197,29 @@ const buildVirtualFS = (): FSNode => {
 
 const virtualFS = buildVirtualFS();
 
+const resolveProjectName = (name: string): string => {
+  const term = name.trim().toLowerCase();
+  if (["visionboard-ai", "visionboard ai", "visionboard", "vision", "2"].includes(term)) {
+    return "visionboard-ai";
+  }
+  if (["feesbook", "fees", "1"].includes(term)) {
+    return "feesbook";
+  }
+  if (["trinetra", "3"].includes(term)) {
+    return "trinetra";
+  }
+  if (["aai-entry-pass", "aai-pass", "aai pass", "aai", "pass system", "4"].includes(term)) {
+    return "aai-entry-pass";
+  }
+  if (["supplylens", "supply", "5"].includes(term)) {
+    return "supplylens";
+  }
+  if (projectIndexMap[term]) {
+    return projectIndexMap[term];
+  }
+  return name;
+};
+
 interface ThemeConfig {
   name: string;
   bgPrimary: string;
@@ -493,19 +516,13 @@ export function useTerminal(
         } else {
           const parts = arg.split("/");
           if (parts[0] === "projects" && parts.length === 2) {
-            let targetId = parts[1];
-            if (projectIndexMap[parts[1]]) {
-              targetId = projectIndexMap[parts[1]];
-            }
+            const targetId = resolveProjectName(parts[1]);
             const p = projects.find((x) => x.id === targetId);
             if (p) {
               simStack = ["~", "projects", p.id];
             }
           } else {
-            let targetId = arg;
-            if (projectIndexMap[arg]) {
-              targetId = projectIndexMap[arg];
-            }
+            const targetId = resolveProjectName(arg);
             const p = projects.find((x) => x.id === targetId);
             if (p) {
               if (simStack.length > 1) {
@@ -577,8 +594,8 @@ export function useTerminal(
       
       for (const p of pathParts) {
         let name = p;
-        if (parentStack.length === 2 && parentStack[1] === "projects" && projectIndexMap[p]) {
-          name = projectIndexMap[p];
+        if (parentStack.length === 2 && parentStack[1] === "projects") {
+          name = resolveProjectName(p);
         }
         const node = findNode(virtualFS, parentStack);
         if (node && node.children && node.children[name] && node.children[name].type === "directory") {
@@ -609,8 +626,8 @@ export function useTerminal(
       
       for (const p of pathParts) {
         let name = p;
-        if (parentStack.length === 2 && parentStack[1] === "projects" && projectIndexMap[p]) {
-          name = projectIndexMap[p];
+        if (parentStack.length === 2 && parentStack[1] === "projects") {
+          name = resolveProjectName(p);
         }
         const node = findNode(virtualFS, parentStack);
         if (node && node.children && node.children[name] && node.children[name].type === "directory") {
@@ -730,8 +747,8 @@ export function useTerminal(
       
       for (const p of pathParts) {
         let name = p;
-        if (parentStack.length === 2 && parentStack[1] === "projects" && projectIndexMap[p]) {
-          name = projectIndexMap[p];
+        if (parentStack.length === 2 && parentStack[1] === "projects") {
+          name = resolveProjectName(p);
         }
         const node = findNode(virtualFS, parentStack);
         if (node && node.children && node.children[name] && node.children[name].type === "directory") {
@@ -761,8 +778,8 @@ export function useTerminal(
       
       for (const p of pathParts) {
         let name = p;
-        if (parentStack.length === 2 && parentStack[1] === "projects" && projectIndexMap[p]) {
-          name = projectIndexMap[p];
+        if (parentStack.length === 2 && parentStack[1] === "projects") {
+          name = resolveProjectName(p);
         }
         const node = findNode(virtualFS, parentStack);
         if (node && node.children && node.children[name] && node.children[name].type === "directory") {
@@ -844,12 +861,12 @@ export function useTerminal(
 
       // Handle direct project command execution (by ID, index, or common aliases)
       let directProjectId = "";
-      if (projects.find((p) => p.id === cmd)) {
-        directProjectId = cmd;
-      } else if (projectIndexMap[cmd]) {
-        directProjectId = projectIndexMap[cmd];
-      } else if (["aai", "aai-pass", "aai-pass-system", "aai-entry-pass"].includes(cmd)) {
-        directProjectId = "aai-entry-pass";
+      const resFull = resolveProjectName(sub);
+      const resCmd = resolveProjectName(cmd);
+      if (projects.find((p) => p.id === resFull)) {
+        directProjectId = resFull;
+      } else if (projects.find((p) => p.id === resCmd)) {
+        directProjectId = resCmd;
       }
 
       if (directProjectId) {
