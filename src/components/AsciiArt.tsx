@@ -36,7 +36,7 @@ export function AsciiBanner({ onComplete }: AsciiBannerProps) {
     <div className="relative">
       <pre 
         style={{
-          backgroundImage: "linear-gradient(90deg, #e3a869, #8fd08a)",
+          backgroundImage: "linear-gradient(90deg, var(--accent-amber), var(--accent-green))",
           WebkitBackgroundClip: "text",
           WebkitTextFillColor: "transparent",
           backgroundClip: "text"
@@ -48,7 +48,7 @@ export function AsciiBanner({ onComplete }: AsciiBannerProps) {
           <span 
             style={{ 
               WebkitTextFillColor: "initial",
-              background: "#e3a869"
+              background: "var(--accent-amber)"
             }}
             className="terminal-block-cursor ml-1 inline-block w-1.5 h-3 align-middle"
           ></span>

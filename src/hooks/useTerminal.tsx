@@ -197,6 +197,144 @@ const buildVirtualFS = (): FSNode => {
 
 const virtualFS = buildVirtualFS();
 
+interface ThemeConfig {
+  name: string;
+  bgPrimary: string;
+  bgSecondary: string;
+  bgTertiary: string;
+  bgTabs: string;
+  bgWindowChrome: string;
+  bgAddressPill: string;
+  accentAmber: string;
+  accentGreen: string;
+  accent: string;
+  accentDim: string;
+  accentGlow: string;
+  borderColor: string;
+  textMuted: string;
+  textPrimary: string;
+  textBright: string;
+  asciiColor: string;
+}
+
+const themes: Record<string, ThemeConfig> = {
+  default: {
+    name: "default",
+    bgPrimary: "#16212c",
+    bgSecondary: "#1c2733",
+    bgTertiary: "#26313d",
+    bgTabs: "#16212c",
+    bgWindowChrome: "#1c2733",
+    bgAddressPill: "#26313d",
+    accentAmber: "#e3a869",
+    accentGreen: "#8fd08a",
+    accent: "#e3a869",
+    accentDim: "rgba(227, 168, 105, 0.08)",
+    accentGlow: "rgba(227, 168, 105, 0.25)",
+    borderColor: "#26313d",
+    textMuted: "#7d8b99",
+    textPrimary: "#d8dee9",
+    textBright: "#f2f4f8",
+    asciiColor: "#cdd3d9",
+  },
+  matrix: {
+    name: "matrix",
+    bgPrimary: "#050e05",
+    bgSecondary: "#0a1a0a",
+    bgTertiary: "#102610",
+    bgTabs: "#050e05",
+    bgWindowChrome: "#0a1a0a",
+    bgAddressPill: "#102610",
+    accentAmber: "#00ff00",
+    accentGreen: "#33ff33",
+    accent: "#33ff33",
+    accentDim: "rgba(0, 255, 0, 0.08)",
+    accentGlow: "rgba(0, 255, 0, 0.25)",
+    borderColor: "#102610",
+    textMuted: "#1b4d1b",
+    textPrimary: "#33ff33",
+    textBright: "#00ff00",
+    asciiColor: "#33ff33",
+  },
+  dracula: {
+    name: "dracula",
+    bgPrimary: "#282a36",
+    bgSecondary: "#21222c",
+    bgTertiary: "#1e1f29",
+    bgTabs: "#282a36",
+    bgWindowChrome: "#21222c",
+    bgAddressPill: "#1e1f29",
+    accentAmber: "#ff79c6",
+    accentGreen: "#bd93f9",
+    accent: "#ff79c6",
+    accentDim: "rgba(255, 121, 198, 0.08)",
+    accentGlow: "rgba(255, 121, 198, 0.25)",
+    borderColor: "#44475a",
+    textMuted: "#6272a4",
+    textPrimary: "#f8f8f2",
+    textBright: "#ffffff",
+    asciiColor: "#bd93f9",
+  },
+  nord: {
+    name: "nord",
+    bgPrimary: "#2e3440",
+    bgSecondary: "#242933",
+    bgTertiary: "#3b4252",
+    bgTabs: "#2e3440",
+    bgWindowChrome: "#242933",
+    bgAddressPill: "#3b4252",
+    accentAmber: "#88c0d0",
+    accentGreen: "#8fbcbb",
+    accent: "#88c0d0",
+    accentDim: "rgba(136, 192, 208, 0.08)",
+    accentGlow: "rgba(136, 192, 208, 0.25)",
+    borderColor: "#3b4252",
+    textMuted: "#4c566a",
+    textPrimary: "#d8dee9",
+    textBright: "#eceff4",
+    asciiColor: "#88c0d0",
+  },
+  cyberpunk: {
+    name: "cyberpunk",
+    bgPrimary: "#100518",
+    bgSecondary: "#1a0826",
+    bgTertiary: "#250c36",
+    bgTabs: "#100518",
+    bgWindowChrome: "#1a0826",
+    bgAddressPill: "#250c36",
+    accentAmber: "#fcee0a",
+    accentGreen: "#00f0ff",
+    accent: "#fcee0a",
+    accentDim: "rgba(252, 238, 10, 0.08)",
+    accentGlow: "rgba(252, 238, 10, 0.25)",
+    borderColor: "#250c36",
+    textMuted: "#7a2e9e",
+    textPrimary: "#00f0ff",
+    textBright: "#ffffff",
+    asciiColor: "#fcee0a",
+  }
+};
+
+const baseCommands = [
+  "help",
+  "about",
+  "experience",
+  "skills",
+  "projects",
+  "cd",
+  "ls",
+  "pwd",
+  "github",
+  "linkedin",
+  "contact",
+  "resume",
+  "clear",
+  "restart",
+  "tree",
+  "cat",
+  "theme"
+];
+
 export function useTerminal(
   triggerImageAnimation: () => void,
   inputRef: RefObject<HTMLInputElement | null>
@@ -213,6 +351,38 @@ export function useTerminal(
   const [cmdHistory, setCmdHistory] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
 
+  // Active theme state
+  const [theme, setTheme] = useState<string>("default");
+
+  const applyThemeVariables = (themeName: string) => {
+    const t = themes[themeName];
+    if (!t) return;
+    const root = document.documentElement;
+    root.style.setProperty("--bg-primary", t.bgPrimary);
+    root.style.setProperty("--bg-secondary", t.bgSecondary);
+    root.style.setProperty("--bg-tertiary", t.bgTertiary);
+    root.style.setProperty("--bg-tabs", t.bgTabs);
+    root.style.setProperty("--bg-window-chrome", t.bgWindowChrome);
+    root.style.setProperty("--bg-address-pill", t.bgAddressPill);
+    root.style.setProperty("--accent-amber", t.accentAmber);
+    root.style.setProperty("--accent-green", t.accentGreen);
+    root.style.setProperty("--accent", t.accent);
+    root.style.setProperty("--accent-dim", t.accentDim);
+    root.style.setProperty("--accent-glow", t.accentGlow);
+    root.style.setProperty("--border-color", t.borderColor);
+    root.style.setProperty("--text-muted", t.textMuted);
+    root.style.setProperty("--text-primary", t.textPrimary);
+    root.style.setProperty("--text-bright", t.textBright);
+    root.style.setProperty("--ascii-color", t.asciiColor);
+  };
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("terminal_theme", theme);
+      applyThemeVariables(theme);
+    }
+  }, [theme]);
+
   // Autocomplete tab state
   const [tabSuggestions, setTabSuggestions] = useState<string[]>([]);
   const [tabIndex, setTabIndex] = useState(-1);
@@ -227,6 +397,12 @@ export function useTerminal(
   // Mount effect to restore persistent session from localStorage
   useEffect(() => {
     if (typeof window !== "undefined") {
+      const savedTheme = localStorage.getItem("terminal_theme");
+      if (savedTheme && themes[savedTheme]) {
+        setTheme(savedTheme);
+        applyThemeVariables(savedTheme);
+      }
+
       const savedPath = localStorage.getItem("terminal_path_stack");
       const savedCmds = localStorage.getItem("terminal_cmd_history");
       
@@ -346,24 +522,7 @@ export function useTerminal(
   };
 
   const getCommandsForContext = (stack: string[] = pathStack) => {
-    return [
-      "help",
-      "about",
-      "experience",
-      "skills",
-      "projects",
-      "cd",
-      "ls",
-      "pwd",
-      "github",
-      "linkedin",
-      "contact",
-      "resume",
-      "clear",
-      "restart",
-      "tree",
-      "cat"
-    ];
+    return baseCommands;
   };
 
   // Sync cursor selection range natively
@@ -399,24 +558,7 @@ export function useTerminal(
     const activeStack = simulatePathStack(input, pathStack);
     const activeNode = findNode(virtualFS, activeStack);
 
-    const baseCommands = [
-      "help",
-      "about",
-      "experience",
-      "skills",
-      "projects",
-      "cd",
-      "ls",
-      "pwd",
-      "github",
-      "linkedin",
-      "contact",
-      "resume",
-      "clear",
-      "restart",
-      "tree",
-      "cat"
-    ];
+
 
     if (args.length === 1 && !trimmed.endsWith(" ")) {
       const avail = getCommandsForContext(activeStack);
@@ -568,24 +710,7 @@ export function useTerminal(
     const activeStack = simulatePathStack(targetInput, pathStack);
     const activeNode = findNode(virtualFS, activeStack);
 
-    const baseCommands = [
-      "help",
-      "about",
-      "experience",
-      "skills",
-      "projects",
-      "cd",
-      "ls",
-      "pwd",
-      "github",
-      "linkedin",
-      "contact",
-      "resume",
-      "clear",
-      "restart",
-      "tree",
-      "cat"
-    ];
+
 
     let matches: string[] = [];
     let isCommandAutocomplete = args.length === 1 && !trimmed.endsWith(" ");
@@ -797,11 +922,53 @@ export function useTerminal(
                 <div><button onClick={() => executeCommand("resume")} className="terminal-link font-bold text-left">resume</button>         - Download resume document (PDF)</div>
                 <div><button onClick={() => executeCommand("clear")} className="terminal-link font-bold text-left">clear</button>          - Clear terminal logs</div>
                 <div><button onClick={() => executeCommand("restart")} className="terminal-link font-bold text-left">restart</button>        - Reload terminal and welcome screen</div>
+                <div><button onClick={() => executeCommand("theme")} className="terminal-link font-bold text-left">theme</button>          - Switch color theme in real time</div>
               </div>
               <p className="text-[10px] text-text-muted mt-2 pl-2">💡 Tip: Click on any command keyword above to execute it directly.</p>
             </div>
           );
           break;
+
+        case "theme": {
+          const themeName = arg.trim();
+          if (!themeName) {
+            output = (
+              <div className="font-mono text-xs text-text-primary pl-2 space-y-2">
+                <p className="text-white font-bold">// Theme Selection Panel</p>
+                <p>Usage: <span className="text-accent-amber">theme &lt;name&gt;</span></p>
+                <div className="space-y-1.5 pl-2">
+                  <p className="text-white">Available Themes (click to apply):</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1.5 max-w-md pt-1">
+                    {Object.keys(themes).map((k) => (
+                      <button 
+                        key={k} 
+                        onClick={() => executeCommand(`theme ${k}`)}
+                        className={`text-left font-mono hover:underline ${theme === k ? "text-accent-green font-bold" : "text-terminal-cyan"}`}
+                      >
+                        ➜ {k.padEnd(11)} : {themes[k].name === "default" ? "Slate-navy (default)" : k === "matrix" ? "Hacker green" : k === "dracula" ? "Dracula dark" : k === "nord" ? "Arctic nord" : "Neon yellow-cyan"}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <p className="text-[10px] text-text-muted mt-2">Active theme: <span className="text-white font-bold">{theme}</span>. Theme transitions are animated smoothly.</p>
+              </div>
+            );
+          } else if (themes[themeName]) {
+            setTheme(themeName);
+            output = (
+              <div className="font-mono text-xs text-accent-green pl-2 font-bold">
+                ➜ Theme switched to &quot;{themeName}&quot; successfully!
+              </div>
+            );
+          } else {
+            output = (
+              <div className="font-mono text-xs text-terminal-red pl-2">
+                bash: theme: &quot;{themeName}&quot; is not a valid theme. Type <button onClick={() => executeCommand("theme")} className="terminal-link">theme</button> to see the list.
+              </div>
+            );
+          }
+          break;
+        }
 
         case "cd": {
           const sanitizedArg = arg.trim().replace(/\/+$/, "");
@@ -961,7 +1128,10 @@ export function useTerminal(
           if (typeof window !== "undefined") {
             localStorage.removeItem("terminal_path_stack");
             localStorage.removeItem("terminal_cmd_history");
+            localStorage.removeItem("terminal_theme");
           }
+          setTheme("default");
+          applyThemeVariables("default");
           setHistory([]);
           resetTabCycle();
           setInput("");

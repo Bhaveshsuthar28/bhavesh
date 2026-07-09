@@ -61,6 +61,7 @@
 /* Force monospace font everywhere */
 * {
   font-family: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
+  transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease, text-shadow 0.4s ease, box-shadow 0.4s ease, fill 0.4s ease, stroke 0.4s ease;
 }
 
 body {
