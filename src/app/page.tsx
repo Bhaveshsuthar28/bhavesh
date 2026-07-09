@@ -167,7 +167,7 @@ export default function Home() {
 
 
           {/* Left Panel: Active Console Shell Stream */}
-          <div className="flex-1 flex flex-col p-4 overflow-y-auto scrollbar-thin select-text relative">
+          <div className="h-[60%] flex-none md:h-full md:flex-1 flex flex-col p-4 overflow-y-auto scrollbar-thin select-text relative">
             <div className="space-y-4">
               {history.map((entry, idx) => (
                 <div key={idx} className="space-y-2">
@@ -224,7 +224,7 @@ export default function Home() {
           {/* Right Panel: Portrait Decode Canvas */}
           {isImageVisible && (
             <div 
-              className="shrink-0 p-4 border-t md:border-t-0 md:border-l border-border-terminal flex items-center justify-center bg-[#16161e]/40 shrink-0 select-none"
+              className="h-[40%] flex-none md:h-full md:w-auto md:shrink-0 p-4 border-t md:border-t-0 md:border-l border-border-terminal flex items-center justify-center bg-[#16161e]/40 overflow-auto scrollbar-thin select-none"
               onClick={(e) => e.stopPropagation()} // Prevent focus shift when clicking inside canvas card
             >
               <PixelatedImage trigger={imageTrigger} onHide={() => setIsImageVisible(false)} />
