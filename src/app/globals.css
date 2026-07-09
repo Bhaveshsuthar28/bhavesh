@@ -119,6 +119,12 @@ body {
   animation: blink 1s step-end infinite;
 }
 
+.terminal-void-cursor {
+  border: 1px solid var(--accent);
+  color: inherit;
+  background-color: transparent;
+}
+
 /* Text selections matching terminal */
 ::selection {
   background-color: var(--accent-glow);

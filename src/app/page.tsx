@@ -19,6 +19,7 @@ export default function Home() {
   const [imageTrigger, setImageTrigger] = useState(0);
   const [isImageVisible, setIsImageVisible] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
+  const [isFocused, setIsFocused] = useState(true);
   const [splitPercentage, setSplitPercentage] = useState(50); // Default 50-50 on mobile
   const touchStartY = useRef<number | null>(null);
   const startSplit = useRef<number>(50);
@@ -241,6 +242,8 @@ export default function Home() {
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}
               onSelect={handleSelect}
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
               className="fixed opacity-0 pointer-events-none w-0 h-0 border-0 p-0 m-0"
               autoComplete="off"
               autoCorrect="off"
@@ -308,7 +311,7 @@ export default function Home() {
                   /* Laptop/Desktop: Retro PowerShell block cursor */
                   <div className="flex-1 flex items-center font-mono text-xs text-text-primary break-all whitespace-pre-wrap select-none ml-1.5">
                     <span>{textBefore}</span>
-                    <span className="terminal-block-cursor select-none font-bold">
+                    <span className={`${isFocused ? "terminal-block-cursor" : "terminal-void-cursor"} select-none font-bold`}>
                       {charAtCursor === " " ? "\u00A0" : charAtCursor}
                     </span>
                     <span>{textAfter}</span>
