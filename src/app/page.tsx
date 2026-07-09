@@ -94,9 +94,8 @@ export default function Home() {
     inputRef.current?.focus();
   };
 
-  // Run start command on mount
+  // Focus on mount
   useEffect(() => {
-    executeCommand("start");
     focusConsole();
   }, []);
 

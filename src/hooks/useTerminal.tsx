@@ -224,6 +224,75 @@ export function useTerminal(
     return stack.join("/");
   };
 
+  // Mount effect to restore persistent session from localStorage
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const savedPath = localStorage.getItem("terminal_path_stack");
+      const savedCmds = localStorage.getItem("terminal_cmd_history");
+      
+      if (savedCmds) {
+        try {
+          setCmdHistory(JSON.parse(savedCmds));
+        } catch (e) {
+          console.error("Failed to parse saved command history", e);
+        }
+      }
+
+      if (savedPath) {
+        try {
+          const parsedPath = JSON.parse(savedPath);
+          if (Array.isArray(parsedPath) && parsedPath.length > 0) {
+            setPathStack(parsedPath);
+            
+            // If at root, run normal start command
+            if (parsedPath.length === 1 && parsedPath[0] === "~") {
+              executeCommand("start");
+            } else {
+              const pathStr = parsedPath.join("/").replace("~", "~");
+              setHistory([
+                {
+                  path: pathStr,
+                  command: "restore-session",
+                  output: (
+                    <div className="font-mono text-xs pl-2 space-y-1.5">
+                      <div className="text-accent-amber font-bold">➜ Session Restored</div>
+                      <p className="text-text-primary">
+                        Welcome back! Restored your terminal session at <span className="text-accent-green font-bold">/{pathStr}</span>.
+                      </p>
+                      <p className="text-text-muted text-[10px]">
+                        Type <span className="text-white">&quot;restart&quot;</span> to reset session to root, or type <span className="text-white">&quot;help&quot;</span> to see commands.
+                      </p>
+                    </div>
+                  )
+                }
+              ]);
+            }
+            return;
+          }
+        } catch (e) {
+          console.error("Failed to parse saved path stack", e);
+        }
+      }
+      
+      // Fallback
+      executeCommand("start");
+    }
+  }, []);
+
+  // Save pathStack changes to localStorage
+  useEffect(() => {
+    if (typeof window !== "undefined" && pathStack.length > 0) {
+      localStorage.setItem("terminal_path_stack", JSON.stringify(pathStack));
+    }
+  }, [pathStack]);
+
+  // Save cmdHistory changes to localStorage
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("terminal_cmd_history", JSON.stringify(cmdHistory));
+    }
+  }, [cmdHistory]);
+
   // Simulate previous commands to find active path stack context
   const simulatePathStack = (inputLine: string, currentStack: string[]): string[] => {
     const segments = inputLine.split(";");
@@ -889,6 +958,10 @@ export function useTerminal(
           return;
 
         case "restart":
+          if (typeof window !== "undefined") {
+            localStorage.removeItem("terminal_path_stack");
+            localStorage.removeItem("terminal_cmd_history");
+          }
           setHistory([]);
           resetTabCycle();
           setInput("");
