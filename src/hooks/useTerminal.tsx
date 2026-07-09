@@ -235,7 +235,7 @@ export function useTerminal(
     setCmdHistory((prev) => [...prev, trimmed]);
     setHistoryIndex(-1);
 
-    const subCommands = trimmed.split(/(?<!https?|ftps?|mailto):/i).map((c) => c.trim()).filter(Boolean);
+    const subCommands = trimmed.split(/;/).map((c) => c.trim()).filter(Boolean);
     let nextStack = [...pathStack];
     const outputs: React.ReactNode[] = [];
 
