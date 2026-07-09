@@ -123,6 +123,7 @@ body {
   border: 1px solid var(--accent);
   color: inherit;
   background-color: transparent;
+  animation: blink 1s step-end infinite;
 }
 
 /* Text selections matching terminal */
