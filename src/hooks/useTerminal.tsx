@@ -418,97 +418,97 @@ export function useTerminal(
             } else if (sanitizedArg === "projects") {
               nextStack = ["~", "projects"];
               output = <div className="text-text-muted pl-2">Navigated to ~/projects. Type &quot;ls&quot; to list directories.</div>;
-            }
-          } else if (["about", "experience", "skills", "contact", "help", "commands"].includes(sanitizedArg)) {
-            nextStack = ["~"];
-            if (sanitizedArg === "about") {
-              output = (
-                <div className="font-mono text-xs text-text-primary leading-relaxed space-y-2 pl-2 border-l border-accent/20">
-                  <p className="text-white font-bold">{bioData.fullName}</p>
-                  <p className="text-white">B.Tech, Artificial Intelligence & Data Science</p>
-                  <p>Gati Shakti Vishwavidyalaya (GSV), Vadodara — Class of 2028 (3rd year)</p>
-                  <p className="text-text-primary/95 mt-2">
-                    I build production systems — from BCAS-compliant infra at Airports Authority of India to real-time video intelligence pipelines. Focused on backend engineering, systems performance, and applied ML.
-                  </p>
-                </div>
-              );
-            } else if (sanitizedArg === "experience") {
-              output = (
-                <div className="font-mono text-xs text-text-primary space-y-3 pl-2">
-                  <div>
-                    <p className="text-white font-bold">AAI Varanasi (Airports Authority of India) — Internship</p>
-                    <p className="text-text-primary/95 pl-3 border-l border-accent/30 mt-1">
-                      Built and deployed a production BCAS-compliant Aerodrome Entry Pass system: passwordless auth (FingerprintJS), PDF pass generation (pdf-lib), multi-step approval workflow.
-                      <br />
-                      <span className="text-terminal-purple">Stack: Node.js, Fastify, Prisma, PostgreSQL</span>
+            } else if (["about", "experience", "skills", "contact", "help", "commands"].includes(sanitizedArg)) {
+              nextStack = ["~"];
+              if (sanitizedArg === "about") {
+                output = (
+                  <div className="font-mono text-xs text-text-primary leading-relaxed space-y-2 pl-2 border-l border-accent/20">
+                    <p className="text-white font-bold">{bioData.fullName}</p>
+                    <p className="text-white">B.Tech, Artificial Intelligence & Data Science</p>
+                    <p>Gati Shakti Vishwavidyalaya (GSV), Vadodara — Class of 2028 (3rd year)</p>
+                    <p className="text-text-primary/95 mt-2">
+                      I build production systems — from BCAS-compliant infra at Airports Authority of India to real-time video intelligence pipelines. Focused on backend engineering, systems performance, and applied ML.
                     </p>
                   </div>
-                  <div>
-                    <p className="text-white font-bold">DRM Vadodara (Indian Railways) — Internship (1st year)</p>
-                  </div>
-                </div>
-              );
-            } else if (sanitizedArg === "skills") {
-              output = (
-                <div className="font-mono text-xs text-text-primary space-y-1.5 pl-2">
-                  {skillCategories.map((cat) => (
-                    <div key={cat.category} className="flex flex-col sm:flex-row sm:items-start gap-1">
-                      <span className="text-white font-bold w-32 shrink-0">{cat.category.padEnd(14)}:</span>
-                      <span className="text-text-primary">{cat.skills.join(", ")}</span>
+                );
+              } else if (sanitizedArg === "experience") {
+                output = (
+                  <div className="font-mono text-xs text-text-primary space-y-3 pl-2">
+                    <div>
+                      <p className="text-white font-bold">AAI Varanasi (Airports Authority of India) — Internship</p>
+                      <p className="text-text-primary/95 pl-3 border-l border-accent/30 mt-1">
+                        Built and deployed a production BCAS-compliant Aerodrome Entry Pass system: passwordless auth (FingerprintJS), PDF pass generation (pdf-lib), multi-step approval workflow.
+                        <br />
+                        <span className="text-terminal-purple">Stack: Node.js, Fastify, Prisma, PostgreSQL</span>
+                      </p>
                     </div>
-                  ))}
-                </div>
-              );
-            } else if (sanitizedArg === "contact") {
-              output = (
-                <div className="font-mono text-xs text-text-primary space-y-1.5 pl-2">
-                  <div className="flex gap-2">
-                    <span className="w-20 font-bold text-white">Email:</span>
-                    <a href={`mailto:${socialLinks.email}`} className="terminal-link">{socialLinks.email}</a>
+                    <div>
+                      <p className="text-white font-bold">DRM Vadodara (Indian Railways) — Internship (1st year)</p>
+                    </div>
                   </div>
-                  <div className="flex gap-2">
-                    <span className="w-20 font-bold text-white">GitHub:</span>
-                    <a href={socialLinks.github} target="_blank" rel="noreferrer" className="terminal-link">github.com/Bhaveshsuthar28</a>
+                );
+              } else if (sanitizedArg === "skills") {
+                output = (
+                  <div className="font-mono text-xs text-text-primary space-y-1.5 pl-2">
+                    {skillCategories.map((cat) => (
+                      <div key={cat.category} className="flex flex-col sm:flex-row sm:items-start gap-1">
+                        <span className="text-white font-bold w-32 shrink-0">{cat.category.padEnd(14)}:</span>
+                        <span className="text-text-primary">{cat.skills.join(", ")}</span>
+                      </div>
+                    ))}
                   </div>
-                  <div className="flex gap-2">
-                    <span className="w-20 font-bold text-white">LinkedIn:</span>
-                    <a href={socialLinks.linkedin} target="_blank" rel="noreferrer" className="terminal-link">linkedin.com/in/bhaveshjangid</a>
+                );
+              } else if (sanitizedArg === "contact") {
+                output = (
+                  <div className="font-mono text-xs text-text-primary space-y-1.5 pl-2">
+                    <div className="flex gap-2">
+                      <span className="w-20 font-bold text-white">Email:</span>
+                      <a href={`mailto:${socialLinks.email}`} className="terminal-link">{socialLinks.email}</a>
+                    </div>
+                    <div className="flex gap-2">
+                      <span className="w-20 font-bold text-white">GitHub:</span>
+                      <a href={socialLinks.github} target="_blank" rel="noreferrer" className="terminal-link">github.com/Bhaveshsuthar28</a>
+                    </div>
+                    <div className="flex gap-2">
+                      <span className="w-20 font-bold text-white">LinkedIn:</span>
+                      <a href={socialLinks.linkedin} target="_blank" rel="noreferrer" className="terminal-link">linkedin.com/in/bhaveshjangid</a>
+                    </div>
+                    <div className="flex gap-2">
+                      <span className="w-20 font-bold text-white">LeetCode:</span>
+                      <a href={socialLinks.leetcode} target="_blank" rel="noreferrer" className="terminal-link">leetcode.com/u/Bhavesh_s_k</a>
+                    </div>
+                    <div className="flex gap-2">
+                      <span className="w-20 font-bold text-white">Codolio:</span>
+                      <a href={socialLinks.codolio} target="_blank" rel="noreferrer" className="terminal-link">codolio.com/profile/Bhavesh_S_K28</a>
+                    </div>
                   </div>
-                  <div className="flex gap-2">
-                    <span className="w-20 font-bold text-white">LeetCode:</span>
-                    <a href={socialLinks.leetcode} target="_blank" rel="noreferrer" className="terminal-link">leetcode.com/u/Bhavesh_s_k</a>
+                );
+              } else {
+                output = (
+                  <div className="space-y-2 text-text-primary font-mono text-xs leading-relaxed">
+                    <p className="text-white font-bold mb-1">Available commands in terminal:</p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1 pl-2">
+                      <div><button onClick={() => executeCommand("about")} className="terminal-link font-bold text-left">about</button>          - Short B.Tech profile bio</div>
+                      <div><button onClick={() => executeCommand("experience")} className="terminal-link font-bold text-left">experience</button>     - Log of internships</div>
+                      <div><button onClick={() => executeCommand("skills")} className="terminal-link font-bold text-left">skills</button>         - Grouped tech stack tag list</div>
+                      <div><button onClick={() => executeCommand("projects")} className="terminal-link font-bold text-left">projects</button>       - List all virtual project directories</div>
+                      <div><span className="text-accent-green font-bold">cd &lt;dir&gt;</span>       - Change directory (e.g. cd projects, cd feesbook)</div>
+                      <div><button onClick={() => executeCommand("cd ..")} className="terminal-link font-bold text-left">cd ..</button>          - Move up one directory level</div>
+                      <div><button onClick={() => executeCommand("ls")} className="terminal-link font-bold text-left">ls</button>             - List contents of current directory</div>
+                      <div><button onClick={() => executeCommand("pwd")} className="terminal-link font-bold text-left">pwd</button>            - Print current path stack</div>
+                      <div><button onClick={() => executeCommand("github")} className="terminal-link font-bold text-left">github</button> / <button onClick={() => executeCommand("linkedin")} className="terminal-link font-bold text-left">linkedin</button> - Redirect to social platforms</div>
+                      <div><button onClick={() => executeCommand("contact")} className="terminal-link font-bold text-left">contact</button>        - Connect channels (email, social indexes)</div>
+                      <div><button onClick={() => executeCommand("resume")} className="terminal-link font-bold text-left">resume</button>         - Download resume document (PDF)</div>
+                      <div><button onClick={() => executeCommand("clear")} className="terminal-link font-bold text-left">clear</button>          - Clear terminal logs</div>
+                      <div><button onClick={() => executeCommand("restart")} className="terminal-link font-bold text-left">restart</button>        - Reload terminal and welcome screen</div>
+                    </div>
+                    <p className="text-[10px] text-text-muted mt-2 pl-2">💡 Tip: Click on any command keyword above to execute it directly.</p>
                   </div>
-                  <div className="flex gap-2">
-                    <span className="w-20 font-bold text-white">Codolio:</span>
-                    <a href={socialLinks.codolio} target="_blank" rel="noreferrer" className="terminal-link">codolio.com/profile/Bhavesh_S_K28</a>
-                  </div>
-                </div>
-              );
+                );
+              }
             } else {
-              output = (
-                <div className="space-y-2 text-text-primary font-mono text-xs leading-relaxed">
-                  <p className="text-white font-bold mb-1">Available commands in terminal:</p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1 pl-2">
-                    <div><button onClick={() => executeCommand("about")} className="terminal-link font-bold text-left">about</button>          - Short B.Tech profile bio</div>
-                    <div><button onClick={() => executeCommand("experience")} className="terminal-link font-bold text-left">experience</button>     - Log of internships</div>
-                    <div><button onClick={() => executeCommand("skills")} className="terminal-link font-bold text-left">skills</button>         - Grouped tech stack tag list</div>
-                    <div><button onClick={() => executeCommand("projects")} className="terminal-link font-bold text-left">projects</button>       - List all virtual project directories</div>
-                    <div><span className="text-accent-green font-bold">cd &lt;dir&gt;</span>       - Change directory (e.g. cd projects, cd feesbook)</div>
-                    <div><button onClick={() => executeCommand("cd ..")} className="terminal-link font-bold text-left">cd ..</button>          - Move up one directory level</div>
-                    <div><button onClick={() => executeCommand("ls")} className="terminal-link font-bold text-left">ls</button>             - List contents of current directory</div>
-                    <div><button onClick={() => executeCommand("pwd")} className="terminal-link font-bold text-left">pwd</button>            - Print current path stack</div>
-                    <div><button onClick={() => executeCommand("github")} className="terminal-link font-bold text-left">github</button> / <button onClick={() => executeCommand("linkedin")} className="terminal-link font-bold text-left">linkedin</button> - Redirect to social platforms</div>
-                    <div><button onClick={() => executeCommand("contact")} className="terminal-link font-bold text-left">contact</button>        - Connect channels (email, social indexes)</div>
-                    <div><button onClick={() => executeCommand("resume")} className="terminal-link font-bold text-left">resume</button>         - Download resume document (PDF)</div>
-                    <div><button onClick={() => executeCommand("clear")} className="terminal-link font-bold text-left">clear</button>          - Clear terminal logs</div>
-                    <div><button onClick={() => executeCommand("restart")} className="terminal-link font-bold text-left">restart</button>        - Reload terminal and welcome screen</div>
-                  </div>
-                  <p className="text-[10px] text-text-muted mt-2 pl-2">💡 Tip: Click on any command keyword above to execute it directly.</p>
-                </div>
-              );
+              output = <div className="text-terminal-red pl-2">bash: cd: {arg}: No such file or directory.</div>;
             }
-          } else {
-            output = <div className="text-terminal-red pl-2">bash: cd: {arg}: No such file or directory.</div>;
           }
         }
         break;
