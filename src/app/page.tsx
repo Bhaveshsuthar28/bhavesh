@@ -17,8 +17,55 @@ import PixelatedImage from "@/components/PixelatedImage";
 export default function Home() {
   const [imageTrigger, setImageTrigger] = useState(0);
   const [isImageVisible, setIsImageVisible] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+  const [splitPercentage, setSplitPercentage] = useState(50); // Default 50-50 on mobile
+  const touchStartY = useRef<number | null>(null);
+  const startSplit = useRef<number>(50);
+  const lastTouchTime = useRef<number>(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const terminalEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    const now = Date.now();
+    if (now - lastTouchTime.current < 300) {
+      // Double tap detected: reset to default 50-50
+      setSplitPercentage(50);
+      touchStartY.current = null;
+      return;
+    }
+    lastTouchTime.current = now;
+
+    if (e.touches.length === 1) {
+      touchStartY.current = e.touches[0].clientY;
+      startSplit.current = splitPercentage;
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (touchStartY.current !== null && e.touches.length === 1) {
+      const currentY = e.touches[0].clientY;
+      const deltaY = currentY - touchStartY.current;
+      const parentHeight = window.innerHeight - 120;
+      if (parentHeight > 0) {
+        const deltaPercent = (deltaY / parentHeight) * 100;
+        const newPercent = Math.max(15, Math.min(85, startSplit.current + deltaPercent));
+        setSplitPercentage(newPercent);
+      }
+    }
+  };
+
+  const handleTouchEnd = () => {
+    touchStartY.current = null;
+  };
 
   const triggerImageAnimation = () => {
     setImageTrigger((prev) => prev + 1);
@@ -167,7 +214,10 @@ export default function Home() {
 
 
           {/* Left Panel: Active Console Shell Stream */}
-          <div className="h-[60%] flex-none md:h-full md:flex-1 flex flex-col p-4 overflow-y-auto scrollbar-thin select-text relative">
+          <div 
+            className="flex-none md:h-full md:flex-1 flex flex-col p-4 overflow-y-auto scrollbar-thin select-text relative"
+            style={isMobile ? { height: `${splitPercentage}%` } : undefined}
+          >
             <div className="space-y-4">
               {history.map((entry, idx) => (
                 <div key={idx} className="space-y-2">
@@ -224,9 +274,18 @@ export default function Home() {
           {/* Right Panel: Portrait Decode Canvas */}
           {isImageVisible && (
             <div 
-              className="h-[40%] flex-none md:h-full md:w-auto md:shrink-0 p-4 border-t md:border-t-0 md:border-l border-border-terminal flex items-center justify-center bg-[#16161e]/40 overflow-auto scrollbar-thin select-none"
+              className="flex-none md:h-full md:w-auto md:shrink-0 p-4 border-t md:border-t-0 md:border-l border-border-terminal flex items-center justify-center bg-[#16161e]/40 overflow-auto scrollbar-thin select-none relative"
+              style={isMobile ? { height: `${100 - splitPercentage}%` } : undefined}
               onClick={(e) => e.stopPropagation()} // Prevent focus shift when clicking inside canvas card
             >
+              {/* Touch Resize Handle on Mobile (Double tap to reset to 50-50, or drag to stretch height) */}
+              <div 
+                className="absolute top-0 left-0 right-0 h-4 cursor-ns-resize z-50 md:hidden"
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
+              />
+              
               <PixelatedImage trigger={imageTrigger} onHide={() => setIsImageVisible(false)} />
             </div>
           )}

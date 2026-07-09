@@ -12,7 +12,6 @@ export default function PixelatedImage({ trigger = 0, onHide }: PixelatedImagePr
   const [statusText, setStatusText] = useState("AWAITING FEED...");
   const [logs, setLogs] = useState<string[]>([]);
   const [blurAmount, setBlurAmount] = useState(16);
-  const [canvasHeight, setCanvasHeight] = useState(320);
   const imageRef = useRef<HTMLImageElement | null>(null);
 
   // Bounding box coordinates for the face lock
@@ -246,7 +245,7 @@ export default function PixelatedImage({ trigger = 0, onHide }: PixelatedImagePr
     return () => {
       cancelAnimationFrame(animationFrameId);
     };
-  }, [trigger, canvasHeight]);
+  }, [trigger]);
 
   return (
     <div className="flex flex-col items-center bg-bg-secondary border border-border-terminal p-4 rounded-lg font-mono w-[352px] shadow-lg shrink-0">
@@ -271,16 +270,13 @@ export default function PixelatedImage({ trigger = 0, onHide }: PixelatedImagePr
       </div>
 
       {/* Canvas Wrapper with top padding to make head visible */}
-      <div 
-        className="relative border border-border-terminal bg-black overflow-hidden rounded mb-4 w-[320px] transition-all duration-150 pt-6"
-        style={{ height: `${canvasHeight + 24}px` }}
-      >
+      <div className="relative border border-border-terminal bg-black overflow-hidden rounded mb-4 w-[320px] pt-6 h-[344px]">
         <canvas
           ref={canvasRef}
           width={320}
           height={320}
-          className="block w-[320px] transition-all duration-150"
-          style={{ filter: `blur(${blurAmount}px)`, height: `${canvasHeight}px` }}
+          className="block w-[320px] h-[320px]"
+          style={{ filter: `blur(${blurAmount}px)` }}
         />
 
         {/* Scan lines CRT static */}
@@ -310,22 +306,6 @@ export default function PixelatedImage({ trigger = 0, onHide }: PixelatedImagePr
               </div>
             );
           })}
-        </div>
-
-        {/* Dynamic Image Height Stretch Slider */}
-        <div className="flex flex-col gap-1 border-t border-border-terminal/45 pt-1.5 mt-1.5">
-          <div className="flex justify-between items-center text-[10px] text-text-muted">
-            <span>STRETCH HEIGHT:</span>
-            <span className="text-accent font-bold">{canvasHeight}px</span>
-          </div>
-          <input 
-            type="range" 
-            min="200" 
-            max="480" 
-            value={canvasHeight} 
-            onChange={(e) => setCanvasHeight(Number(e.target.value))}
-            className="w-full accent-accent-amber h-1 bg-[#1a232e] rounded-lg appearance-none cursor-pointer"
-          />
         </div>
       </div>
     </div>
