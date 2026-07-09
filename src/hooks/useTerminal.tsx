@@ -235,14 +235,19 @@ export function useTerminal(
     setCmdHistory((prev) => [...prev, trimmed]);
     setHistoryIndex(-1);
 
-    const args = trimmed.split(/\s+/);
-    const cmd = args[0].toLowerCase();
-    const arg = args.slice(1).join(" ").toLowerCase();
-
-    let output: React.ReactNode = null;
+    const subCommands = trimmed.split(/(?<!https?|ftps?|mailto):/i).map((c) => c.trim()).filter(Boolean);
     let nextStack = [...pathStack];
+    const outputs: React.ReactNode[] = [];
 
-    switch (cmd) {
+    for (let i = 0; i < subCommands.length; i++) {
+      const sub = subCommands[i];
+      const args = sub.split(/\s+/);
+      const cmd = args[0].toLowerCase();
+      const arg = args.slice(1).join(" ").toLowerCase();
+
+      let output: React.ReactNode = null;
+
+      switch (cmd) {
       case "start":
         triggerImageAnimation();
         output = (
@@ -690,7 +695,23 @@ export function useTerminal(
         );
     }
 
-    setHistory((prev) => [...prev, { path: formatPath(pathStack), command: commandLine, output }]);
+      outputs.push(output);
+    }
+
+    setHistory((prev) => [
+      ...prev,
+      {
+        path: formatPath(pathStack),
+        command: commandLine,
+        output: (
+          <div className="space-y-3">
+            {outputs.map((out, idx) => out && (
+              <div key={idx}>{out}</div>
+            ))}
+          </div>
+        )
+      }
+    ]);
     setPathStack(nextStack);
     setInput("");
     setCaretIndex(0);
