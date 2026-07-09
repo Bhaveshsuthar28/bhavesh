@@ -101,15 +101,10 @@ export function useTerminal(
       }
     } else if (cmd === "cd" && args.length === 2) {
       const folderArg = args[1];
-      const availSuggestions = [
-        "projects",
-        ...projects.map((p) => p.id),
-        "about",
-        "experience",
-        "skills",
-        "contact",
-        "help"
-      ];
+      const isAtRoot = pathStack.length === 1;
+      const availSuggestions = isAtRoot
+        ? ["projects", "about", "experience", "skills", "contact", "help"]
+        : projects.map((p) => p.id);
       const match = availSuggestions.find((s) => s.startsWith(folderArg) && s !== folderArg);
       if (match) {
         setGhostText(match.slice(folderArg.length));
@@ -196,15 +191,10 @@ export function useTerminal(
       matches = avail.filter((c) => c.startsWith(cmd));
     } else if (isCdAutocomplete) {
       const folderArg = args[1] || "";
-      const availSuggestions = [
-        "projects",
-        ...projects.map((p) => p.id),
-        "about",
-        "experience",
-        "skills",
-        "contact",
-        "help"
-      ];
+      const isAtRoot = pathStack.length === 1;
+      const availSuggestions = isAtRoot
+        ? ["projects", "about", "experience", "skills", "contact", "help"]
+        : projects.map((p) => p.id);
       matches = availSuggestions.filter((s) => s.startsWith(folderArg));
     }
 
@@ -395,19 +385,40 @@ export function useTerminal(
             output = <div className="text-text-muted pl-2">Already at root level (~)</div>;
           }
         } else {
-          // Check if matches a project (by ID or index number)
-          let targetId = sanitizedArg;
-          if (projectIndexMap[sanitizedArg]) {
-            targetId = projectIndexMap[sanitizedArg];
-          }
-          const p = projects.find((x) => x.id === targetId);
+          // Support sub-directory slash path, e.g. cd projects/feesbook
+          const parts = sanitizedArg.split("/");
+          if (parts[0] === "projects" && parts.length === 2) {
+            let targetId = parts[1];
+            if (projectIndexMap[parts[1]]) {
+              targetId = projectIndexMap[parts[1]];
+            }
+            const p = projects.find((x) => x.id === targetId);
+            if (p) {
+              nextStack = ["~", "projects", p.id];
+              output = formatProjectDetail(p);
+            } else {
+              output = <div className="text-terminal-red pl-2">bash: cd: {sanitizedArg}: No such file or directory.</div>;
+            }
+          } else {
+            // Check if matches a project (by ID or index number)
+            let targetId = sanitizedArg;
+            if (projectIndexMap[sanitizedArg]) {
+              targetId = projectIndexMap[sanitizedArg];
+            }
+            const p = projects.find((x) => x.id === targetId);
 
-          if (p) {
-            nextStack = ["~", "projects", p.id];
-            output = formatProjectDetail(p);
-          } else if (sanitizedArg === "projects") {
-            nextStack = ["~", "projects"];
-            output = <div className="text-text-muted pl-2">Navigated to ~/projects. Type &quot;ls&quot; to list directories.</div>;
+            if (p) {
+              // Block direct cd to project if we are at root level (~)
+              if (pathStack.length === 1) {
+                output = <div className="text-terminal-red pl-2">bash: cd: {sanitizedArg}: No such file or directory.</div>;
+              } else {
+                nextStack = ["~", "projects", p.id];
+                output = formatProjectDetail(p);
+              }
+            } else if (sanitizedArg === "projects") {
+              nextStack = ["~", "projects"];
+              output = <div className="text-text-muted pl-2">Navigated to ~/projects. Type &quot;ls&quot; to list directories.</div>;
+            }
           } else if (["about", "experience", "skills", "contact", "help", "commands"].includes(sanitizedArg)) {
             nextStack = ["~"];
             if (sanitizedArg === "about") {
@@ -505,8 +516,13 @@ export function useTerminal(
       case "ls":
         if (currentPath === "~") {
           output = (
-            <div className="font-mono text-xs text-accent flex gap-4 pl-2">
-              <button onClick={() => executeCommand("cd projects")} className="terminal-link font-bold">projects/</button>
+            <div className="font-mono text-xs flex flex-wrap gap-x-6 gap-y-1 pl-2">
+              <button onClick={() => executeCommand("cd projects")} className="text-accent-green font-bold hover:underline">projects/</button>
+              <button onClick={() => executeCommand("about")} className="terminal-link">about.md</button>
+              <button onClick={() => executeCommand("experience")} className="terminal-link">experience.md</button>
+              <button onClick={() => executeCommand("skills")} className="terminal-link">skills.md</button>
+              <button onClick={() => executeCommand("contact")} className="terminal-link">contact.md</button>
+              <button onClick={() => executeCommand("resume")} className="terminal-link">resume.pdf</button>
             </div>
           );
         } else if (currentPath === "~/projects") {
@@ -613,35 +629,35 @@ export function useTerminal(
               <button onClick={() => executeCommand("cd projects")} className="terminal-link font-bold">projects/</button>
               {"\n"}
               {"│   ├── "}
-              <button onClick={() => executeCommand("cd feesbook")} className="terminal-link font-bold">feesbook/</button>
+              <button onClick={() => executeCommand("cd projects/feesbook")} className="terminal-link font-bold">feesbook/</button>
               {"\n"}
               {"│   │   ├── problem.txt\n"}
               {"│   │   ├── approach.txt\n"}
               {"│   │   ├── stack.json\n"}
               {"│   │   └── outcome.log\n"}
               {"│   ├── "}
-              <button onClick={() => executeCommand("cd visionboard-ai")} className="terminal-link font-bold">visionboard-ai/</button>
+              <button onClick={() => executeCommand("cd projects/visionboard-ai")} className="terminal-link font-bold">visionboard-ai/</button>
               {"\n"}
               {"│   │   ├── problem.txt\n"}
               {"│   │   ├── approach.txt\n"}
               {"│   │   ├── stack.json\n"}
               {"│   │   └── outcome.log\n"}
               {"│   ├── "}
-              <button onClick={() => executeCommand("cd trinetra")} className="terminal-link font-bold">trinetra/</button>
+              <button onClick={() => executeCommand("cd projects/trinetra")} className="terminal-link font-bold">trinetra/</button>
               {"\n"}
               {"│   │   ├── problem.txt\n"}
               {"│   │   ├── approach.txt\n"}
               {"│   │   ├── stack.json\n"}
               {"│   │   └── outcome.log\n"}
               {"│   ├── "}
-              <button onClick={() => executeCommand("cd aai-entry-pass")} className="terminal-link font-bold">aai-entry-pass/</button>
+              <button onClick={() => executeCommand("cd projects/aai-entry-pass")} className="terminal-link font-bold">aai-entry-pass/</button>
               {"\n"}
               {"│   │   ├── problem.txt\n"}
               {"│   │   ├── approach.txt\n"}
               {"│   │   ├── stack.json\n"}
               {"│   │   └── outcome.log\n"}
               {"│   └── "}
-              <button onClick={() => executeCommand("cd supplylens")} className="terminal-link font-bold">supplylens/</button>
+              <button onClick={() => executeCommand("cd projects/supplylens")} className="terminal-link font-bold">supplylens/</button>
               {"\n"}
               {"│       ├── problem.txt\n"}
               {"│       ├── approach.txt\n"}
