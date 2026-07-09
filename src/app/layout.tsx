@@ -14,6 +14,9 @@ export const metadata: Metadata = {
   description: "B.Tech AI & Data Science @ GSV. Building production systems: from BCAS-compliant infra at Airports Authority of India to real-time video intelligence pipelines.",
   keywords: ["Bhavesh Suthar", "Bhavesh Jangid", "AI Engineer", "ML Engineer", "Backend Developer", "Gati Shakti Vishwavidyalaya", "Airports Authority of India", "Varanasi", "Next.js Portfolio"],
   authors: [{ name: "Bhavesh Suthar" }],
+  icons: {
+    icon: "/favicon.png",
+  },
   openGraph: {
     title: "Bhavesh Suthar | AI/ML Engineer & Backend Developer",
     description: "B.Tech AI & Data Science student building high-performance systems and CV/ML pipelines.",
