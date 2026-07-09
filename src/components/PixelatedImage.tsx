@@ -246,7 +246,7 @@ export default function PixelatedImage({ trigger = 0, onHide }: PixelatedImagePr
     return () => {
       cancelAnimationFrame(animationFrameId);
     };
-  }, [trigger]);
+  }, [trigger, canvasHeight]);
 
   return (
     <div className="flex flex-col items-center bg-bg-secondary border border-border-terminal p-4 rounded-lg font-mono w-[352px] shadow-lg shrink-0">
@@ -270,10 +270,10 @@ export default function PixelatedImage({ trigger = 0, onHide }: PixelatedImagePr
         </div>
       </div>
 
-      {/* Canvas Wrapper */}
+      {/* Canvas Wrapper with top padding to make head visible */}
       <div 
-        className="relative border border-border-terminal bg-black overflow-hidden rounded mb-4 w-[320px] transition-all duration-150"
-        style={{ height: `${canvasHeight}px` }}
+        className="relative border border-border-terminal bg-black overflow-hidden rounded mb-4 w-[320px] transition-all duration-150 pt-6"
+        style={{ height: `${canvasHeight + 24}px` }}
       >
         <canvas
           ref={canvasRef}
