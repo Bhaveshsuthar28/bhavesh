@@ -92,7 +92,10 @@ export default function Home() {
 
   // Focus input on console panel click
   const focusConsole = () => {
-    inputRef.current?.focus();
+    const selected = window.getSelection()?.toString();
+    if (!selected) {
+      inputRef.current?.focus();
+    }
   };
 
   // Focus on mount
@@ -130,8 +133,11 @@ export default function Home() {
       e.preventDefault();
       handleDownArrow();
     } else if (e.ctrlKey && e.key.toLowerCase() === "c") {
-      e.preventDefault();
-      handleCtrlC();
+      const selected = window.getSelection()?.toString();
+      if (!selected) {
+        e.preventDefault();
+        handleCtrlC();
+      }
     } else if (e.ctrlKey && e.key.toLowerCase() === "l") {
       e.preventDefault();
       handleCtrlL();
