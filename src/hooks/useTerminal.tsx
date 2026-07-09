@@ -648,7 +648,24 @@ export function useTerminal(
 
       let output: React.ReactNode = null;
 
-      switch (cmd) {
+      // Handle direct project command execution (by ID, index, or common aliases)
+      let directProjectId = "";
+      if (projects.find((p) => p.id === cmd)) {
+        directProjectId = cmd;
+      } else if (projectIndexMap[cmd]) {
+        directProjectId = projectIndexMap[cmd];
+      } else if (["aai", "aai-pass", "aai-pass-system", "aai-entry-pass"].includes(cmd)) {
+        directProjectId = "aai-entry-pass";
+      }
+
+      if (directProjectId) {
+        const p = projects.find((x) => x.id === directProjectId);
+        if (p) {
+          nextStack = ["~", "projects", p.id];
+          output = formatProjectDetail(p);
+        }
+      } else {
+        switch (cmd) {
         case "start":
           triggerImageAnimation();
           output = (
@@ -951,6 +968,8 @@ export function useTerminal(
               bash: {cmd}: command not found. Type <button onClick={() => executeCommand("help")} className="terminal-link font-bold">help</button> to see list of valid commands.
             </div>
           );
+      }
+
       }
 
       outputs.push(output);
