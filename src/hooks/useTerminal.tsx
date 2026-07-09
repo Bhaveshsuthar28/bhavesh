@@ -45,7 +45,59 @@ export function useTerminal(
     return stack.join("/");
   };
 
-  const getCommandsForContext = () => {
+  const simulatePathStack = (inputLine: string, currentStack: string[]): string[] => {
+    const segments = inputLine.split(";");
+    if (segments.length <= 1) return [...currentStack];
+
+    let simStack = [...currentStack];
+    // Simulate each command except the last one (which is currently being typed)
+    for (let i = 0; i < segments.length - 1; i++) {
+      const seg = segments[i].trim();
+      if (!seg) continue;
+
+      const args = seg.split(/\s+/);
+      const cmd = args[0].toLowerCase();
+      const arg = args.slice(1).join(" ").toLowerCase().replace(/\/+$/, "");
+
+      if (cmd === "cd") {
+        if (!arg || arg === "~") {
+          simStack = ["~"];
+        } else if (arg === "..") {
+          if (simStack.length > 1) {
+            simStack.pop();
+          }
+        } else {
+          const parts = arg.split("/");
+          if (parts[0] === "projects" && parts.length === 2) {
+            let targetId = parts[1];
+            if (projectIndexMap[parts[1]]) {
+              targetId = projectIndexMap[parts[1]];
+            }
+            const p = projects.find((x) => x.id === targetId);
+            if (p) {
+              simStack = ["~", "projects", p.id];
+            }
+          } else {
+            let targetId = arg;
+            if (projectIndexMap[arg]) {
+              targetId = projectIndexMap[arg];
+            }
+            const p = projects.find((x) => x.id === targetId);
+            if (p) {
+              if (simStack.length > 1) {
+                simStack = ["~", "projects", p.id];
+              }
+            } else if (arg === "projects") {
+              simStack = ["~", "projects"];
+            }
+          }
+        }
+      }
+    }
+    return simStack;
+  };
+
+  const getCommandsForContext = (stack: string[] = pathStack) => {
     const baseCommands = [
       "help",
       "about",
@@ -64,7 +116,7 @@ export function useTerminal(
       "tree",
     ];
 
-    if (pathStack.length === 2 && pathStack[1] === "projects") {
+    if (stack.length === 2 && stack[1] === "projects") {
       return [...baseCommands, ...projects.map((p) => p.id)];
     }
     return baseCommands;
@@ -100,17 +152,18 @@ export function useTerminal(
     const trimmed = activeTrimmed.toLowerCase();
     const args = trimmed.split(/\s+/);
     const cmd = args[0];
+    const activeStack = simulatePathStack(input, pathStack);
 
     if (args.length === 1 && !trimmed.endsWith(" ")) {
-      const avail = getCommandsForContext();
+      const avail = getCommandsForContext(activeStack);
       const match = avail.find((c) => c.startsWith(cmd) && c !== cmd);
       if (match) {
         setGhostText(match.slice(cmd.length));
         return;
       }
-    } else if (cmd === "cd" && args.length === 2) {
+    } else if (cmd === "cd" && args.length === 2 && args[1].length > 0) {
       const folderArg = args[1];
-      const isAtRoot = pathStack.length === 1;
+      const isAtRoot = activeStack.length === 1;
       const availSuggestions = isAtRoot
         ? ["projects", "about", "experience", "skills", "contact", "help"]
         : projects.map((p) => p.id);
@@ -193,17 +246,18 @@ export function useTerminal(
     const trimmed = activeTrimmed.toLowerCase();
     const args = trimmed.split(/\s+/);
     const cmd = args[0];
+    const activeStack = simulatePathStack(targetInput, pathStack);
 
     let matches: string[] = [];
     let isCommandAutocomplete = args.length === 1 && !trimmed.endsWith(" ");
     let isCdAutocomplete = (cmd === "cd" && args.length === 2) || (cmd === "cd" && args.length === 1 && activeSegment.endsWith(" "));
 
     if (isCommandAutocomplete) {
-      const avail = getCommandsForContext();
+      const avail = getCommandsForContext(activeStack);
       matches = avail.filter((c) => c.startsWith(cmd));
     } else if (isCdAutocomplete) {
       const folderArg = args[1] || "";
-      const isAtRoot = pathStack.length === 1;
+      const isAtRoot = activeStack.length === 1;
       const availSuggestions = isAtRoot
         ? ["projects", "about", "experience", "skills", "contact", "help"]
         : projects.map((p) => p.id);
