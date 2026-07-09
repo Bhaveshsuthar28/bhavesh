@@ -1,6 +1,7 @@
 "use client";
 
 import { Briefcase, GraduationCap } from "lucide-react";
+import { FaPlane, FaTrain } from "react-icons/fa";
 import { experiences, education } from "@/data/portfolio";
 
 export default function ExperienceSection() {
@@ -32,7 +33,13 @@ export default function ExperienceSection() {
               <div className="space-y-2">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
                   <div className="flex items-center gap-2">
-                    <Briefcase size={14} className="text-accent" />
+                    {exp.company.toLowerCase().includes("airport") || exp.company.toLowerCase().includes("aai") ? (
+                      <FaPlane size={14} className="text-accent" />
+                    ) : exp.company.toLowerCase().includes("railway") || exp.company.toLowerCase().includes("drm") ? (
+                      <FaTrain size={14} className="text-accent" />
+                    ) : (
+                      <Briefcase size={14} className="text-accent" />
+                    )}
                     <h3 className="font-bold text-white text-base">
                       {exp.company}
                     </h3>
@@ -46,7 +53,7 @@ export default function ExperienceSection() {
                   ROLE: {exp.role.toUpperCase()}
                 </div>
 
-                <p className="text-text-primary text-sm opacity-90 leading-relaxed font-mono">
+                <p className="text-text-primary text-sm opacity-90 leading-relaxed font-mono whitespace-pre-line">
                   {exp.description}
                 </p>
               </div>

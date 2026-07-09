@@ -12,10 +12,11 @@ export interface LogItem {
 
 const projectIndexMap: Record<string, string> = {
   "1": "feesbook",
-  "2": "visionboard-ai",
-  "3": "trinetra",
+  "2": "signallab",
+  "3": "smartride",
   "4": "aai-entry-pass",
   "5": "supplylens",
+  "6": "gsvconnect",
 };
 
 // Tree Node Interface for Virtual FileSystem
@@ -64,7 +65,7 @@ const getSectionContent = (name: string): React.ReactNode => {
             <div key={exp.company}>
               <p className="text-white font-bold">{exp.company} — {exp.role}</p>
               <p className="text-[10px] text-text-muted font-bold mb-1">Period: {exp.period}</p>
-              <p className="text-text-primary/95 pl-3 border-l border-accent/30 mt-1">
+              <p className="text-text-primary/95 pl-3 border-l border-accent/30 mt-1 whitespace-pre-line">
                 {exp.description}
               </p>
             </div>
@@ -199,20 +200,23 @@ const virtualFS = buildVirtualFS();
 
 const resolveProjectName = (name: string): string => {
   const term = name.trim().toLowerCase();
-  if (["visionboard-ai", "visionboard ai", "visionboard", "vision", "2"].includes(term)) {
-    return "visionboard-ai";
-  }
-  if (["feesbook", "fees", "1"].includes(term)) {
+  if (["feesbook", "fees", "feego", "1"].includes(term)) {
     return "feesbook";
   }
-  if (["trinetra", "3"].includes(term)) {
-    return "trinetra";
+  if (["signallab", "signal", "2"].includes(term)) {
+    return "signallab";
+  }
+  if (["smartride", "ride", "3"].includes(term)) {
+    return "smartride";
   }
   if (["aai-entry-pass", "aai-pass", "aai pass", "aai", "pass system", "4"].includes(term)) {
     return "aai-entry-pass";
   }
   if (["supplylens", "supply", "5"].includes(term)) {
     return "supplylens";
+  }
+  if (["gsvconnect", "gsv", "6"].includes(term)) {
+    return "gsvconnect";
   }
   if (projectIndexMap[term]) {
     return projectIndexMap[term];
@@ -375,7 +379,24 @@ export function useTerminal(
   const [historyIndex, setHistoryIndex] = useState(-1);
 
   // Active theme state
-  const [theme, setTheme] = useState<string>("default");
+  const [theme, setThemeState] = useState<string>("default");
+
+  const setTheme = (newTheme: string) => {
+    setThemeState(newTheme);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("theme", newTheme);
+    }
+  };
+
+  // Load saved theme on mount
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const savedTheme = localStorage.getItem("theme");
+      if (savedTheme && themes[savedTheme]) {
+        setThemeState(savedTheme);
+      }
+    }
+  }, []);
 
   const applyThemeVariables = (themeName: string) => {
     const t = themes[themeName];
@@ -1090,41 +1111,22 @@ export function useTerminal(
                 {"├── "}
                 <button onClick={() => executeCommand("cd projects")} className="terminal-link font-bold">projects/</button>
                 {"\n"}
-                {"│   ├── "}
-                <button onClick={() => executeCommand("cd projects/feesbook")} className="terminal-link font-bold">feesbook/</button>
-                {"\n"}
-                {"│   │   ├── problem.txt\n"}
-                {"│   │   ├── approach.txt\n"}
-                {"│   │   ├── stack.json\n"}
-                {"│   │   └── outcome.log\n"}
-                {"│   ├── "}
-                <button onClick={() => executeCommand("cd projects/visionboard-ai")} className="terminal-link font-bold">visionboard-ai/</button>
-                {"\n"}
-                {"│   │   ├── problem.txt\n"}
-                {"│   │   ├── approach.txt\n"}
-                {"│   │   ├── stack.json\n"}
-                {"│   │   └── outcome.log\n"}
-                {"│   ├── "}
-                <button onClick={() => executeCommand("cd projects/trinetra")} className="terminal-link font-bold">trinetra/</button>
-                {"\n"}
-                {"│   │   ├── problem.txt\n"}
-                {"│   │   ├── approach.txt\n"}
-                {"│   │   ├── stack.json\n"}
-                {"│   │   └── outcome.log\n"}
-                {"│   ├── "}
-                <button onClick={() => executeCommand("cd projects/aai-entry-pass")} className="terminal-link font-bold">aai-entry-pass/</button>
-                {"\n"}
-                {"│   │   ├── problem.txt\n"}
-                {"│   │   ├── approach.txt\n"}
-                {"│   │   ├── stack.json\n"}
-                {"│   │   └── outcome.log\n"}
-                {"│   └── "}
-                <button onClick={() => executeCommand("cd projects/supplylens")} className="terminal-link font-bold">supplylens/</button>
-                {"\n"}
-                {"│       ├── problem.txt\n"}
-                {"│       ├── approach.txt\n"}
-                {"│       ├── stack.json\n"}
-                {"│       └── outcome.log\n"}
+                {projects.map((p, idx) => {
+                  const isLastProject = idx === projects.length - 1;
+                  const projectPrefix = isLastProject ? "└── " : "├── ";
+                  const childPrefix = isLastProject ? "    " : "│   ";
+                  return (
+                    <React.Fragment key={p.id}>
+                      {`│   ${projectPrefix}`}
+                      <button onClick={() => executeCommand(`cd projects/${p.id}`)} className="terminal-link font-bold">{p.id}/</button>
+                      {"\n"}
+                      {`${`│   ${childPrefix}`}├── problem.txt\n`}
+                      {`${`│   ${childPrefix}`}├── approach.txt\n`}
+                      {`${`│   ${childPrefix}`}├── stack.json\n`}
+                      {`${`│   ${childPrefix}`}└── outcome.log\n`}
+                    </React.Fragment>
+                  );
+                })}
                 {"├── "}
                 <button onClick={() => executeCommand("about")} className="terminal-link">about.md</button>
                 {"\n"}

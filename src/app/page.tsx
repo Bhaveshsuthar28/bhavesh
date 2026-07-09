@@ -95,6 +95,7 @@ export default function Home() {
 
   // Focus input on console panel click
   const focusConsole = () => {
+    if (typeof window !== "undefined" && window.innerWidth < 1024) return;
     const selected = window.getSelection()?.toString();
     if (!selected) {
       inputRef.current?.focus();
@@ -290,7 +291,7 @@ export default function Home() {
           {/* Left Panel: Active Console Shell Stream */}
           <div 
             className="flex-none md:h-full md:flex-1 flex flex-col p-4 overflow-y-auto scrollbar-thin select-text relative"
-            style={isMobile ? { height: `${splitPercentage}%` } : undefined}
+            style={isMobile ? { height: isImageVisible ? `${splitPercentage}%` : "100%" } : undefined}
           >
             <div className="space-y-4">
               {history.map((entry, idx) => (
@@ -327,12 +328,12 @@ export default function Home() {
                       value={input}
                       onChange={handleInputChange}
                       onKeyDown={handleKeyDown}
-                      className="w-full bg-transparent border-0 outline-none p-0 m-0 font-mono text-xs text-text-primary caret-accent-amber relative z-10 select-text"
+                      className="w-full bg-transparent border-0 outline-none p-0 m-0 font-mono text-xs text-text-primary relative z-10 select-text"
+                      style={{ caretColor: "var(--accent)" }}
                       autoComplete="off"
                       autoCorrect="off"
                       autoCapitalize="off"
                       spellCheck="false"
-                      autoFocus
                     />
                     {ghostText && (
                       <div className="absolute left-0 top-0 pointer-events-none text-text-muted font-mono text-xs select-none whitespace-pre">

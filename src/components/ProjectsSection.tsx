@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FileCode, ChevronDown, ChevronRight, ExternalLink, Activity } from "lucide-react";
+import { FaPlane, FaTrain } from "react-icons/fa";
 import { projects, Project } from "@/data/portfolio";
 
 export default function ProjectsSection() {
@@ -22,9 +23,9 @@ export default function ProjectsSection() {
       </div>
 
       <div className="mb-6 font-mono text-xs text-text-muted select-none hidden md:block">
-        total 5 items
+        total 6 items
         <br />
-        drwxr-xr-x  5 bhavesh staff  160 Jul  9 10:53 .
+        drwxr-xr-x  6 bhavesh staff  192 Jul  9 10:53 .
         <br />
         drwxr-xr-x  8 bhavesh staff  256 Jul  9 10:53 ..
       </div>
@@ -62,7 +63,13 @@ export default function ProjectsSection() {
                     ) : (
                       <ChevronRight size={16} className="text-text-muted" />
                     )}
-                    <FileCode size={16} className={isExpanded ? "text-accent" : "text-text-muted"} />
+                    {project.id.includes("aai") || project.id.includes("pass") ? (
+                      <FaPlane size={16} className={isExpanded ? "text-accent" : "text-text-muted"} />
+                    ) : project.id.includes("ride") || project.id.includes("train") ? (
+                      <FaTrain size={16} className={isExpanded ? "text-accent" : "text-text-muted"} />
+                    ) : (
+                      <FileCode size={16} className={isExpanded ? "text-accent" : "text-text-muted"} />
+                    )}
                     <span className={`font-semibold tracking-wide text-sm md:text-base ${isExpanded ? "text-accent" : "text-white"}`}>
                       {project.title}
                     </span>
