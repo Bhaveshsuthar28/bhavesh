@@ -248,7 +248,7 @@ export default function PixelatedImage({ trigger = 0, onHide }: PixelatedImagePr
   }, [trigger]);
 
   return (
-    <div className="flex flex-col items-center bg-bg-secondary border border-border-terminal p-4 rounded-lg font-mono w-[352px] shadow-lg shrink-0">
+    <div className="flex flex-col items-center bg-bg-secondary border border-border-terminal p-2 sm:p-4 rounded-lg font-mono w-full max-w-[280px] sm:w-[352px] shadow-lg shrink-0">
       {/* Title Header Bar */}
       <div className="flex items-center justify-between w-full border-b border-border-terminal pb-2 mb-3 text-xs select-none">
         <div className="flex items-center gap-1.5 text-accent">
@@ -270,12 +270,12 @@ export default function PixelatedImage({ trigger = 0, onHide }: PixelatedImagePr
       </div>
 
       {/* Canvas Wrapper */}
-      <div className="relative border border-border-terminal bg-black overflow-hidden rounded mb-4">
+      <div className="relative border border-border-terminal bg-black overflow-hidden rounded mb-4 w-full aspect-square max-w-[240px] sm:max-w-[320px]">
         <canvas
           ref={canvasRef}
           width={320}
           height={320}
-          className="block w-[320px] h-[320px] transition-all duration-150"
+          className="block w-full h-full transition-all duration-150"
           style={{ filter: `blur(${blurAmount}px)` }}
         />
 

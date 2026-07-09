@@ -65,13 +65,6 @@ export default function Home() {
     resetTabCycle();
   };
 
-  const handleSelect = (e: React.SyntheticEvent<HTMLInputElement>) => {
-    const start = inputRef.current?.selectionStart;
-    if (start !== null && start !== undefined) {
-      setCaretIndex(start);
-    }
-  };
-
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Tab") {
       e.preventDefault();
@@ -95,7 +88,8 @@ export default function Home() {
       // Let browser move selection, selection change triggers handleSelect
       resetTabCycle();
     } else if (e.key === "ArrowRight") {
-      if (caretIndex === input.length && ghostText) {
+      const caretPos = inputRef.current?.selectionStart ?? 0;
+      if (caretPos === input.length && ghostText) {
         e.preventDefault();
         acceptGhostSuggestion();
       } else {
@@ -108,10 +102,7 @@ export default function Home() {
     }
   };
 
-  // Render mock caret block position in input line
-  const textBefore = input.slice(0, caretIndex);
-  const charAtCursor = input.charAt(caretIndex) || " ";
-  const textAfter = input.slice(caretIndex + 1);
+  // Visual layout helpers
 
   return (
     <div className="flex flex-col h-screen select-none bg-bg-primary text-text-primary p-2 sm:p-4 overflow-hidden">
@@ -173,20 +164,7 @@ export default function Home() {
           }}
           onClick={focusConsole}
         >
-          {/* Hidden Input field (native text capturing) */}
-          <input
-            ref={inputRef}
-            type="text"
-            value={input}
-            onChange={handleInputChange}
-            onKeyDown={handleKeyDown}
-            onSelect={handleSelect}
-            className="fixed opacity-0 pointer-events-none w-0 h-0 border-0 p-0 m-0"
-            autoComplete="off"
-            autoCorrect="off"
-            autoCapitalize="off"
-            spellCheck="false"
-          />
+
 
           {/* Left Panel: Active Console Shell Stream */}
           <div className="flex-1 flex flex-col p-4 overflow-y-auto scrollbar-thin select-text relative">
@@ -212,19 +190,29 @@ export default function Home() {
 
               {/* Prompt Input Line */}
               <div className="flex items-center gap-1 font-mono text-xs select-none pt-2">
-                <span className="text-accent-amber font-bold">visitor</span>
-                <span className="text-accent-green font-bold">@bhavesh-dev</span>
-                <span className="text-text-muted font-bold">:{currentPath === "~" ? "~" : `/${currentPath}`}$</span>
+                <span className="text-accent-amber font-bold shrink-0">visitor</span>
+                <span className="text-accent-green font-bold shrink-0">@bhavesh-dev</span>
+                <span className="text-text-muted font-bold shrink-0">:{currentPath === "~" ? "~" : `/${currentPath}`}$</span>
                 
-                {/* Custom visually rendered caret positioning */}
-                <div className="flex-1 flex items-center font-mono text-xs text-text-primary break-all whitespace-pre-wrap select-none ml-1.5">
-                  <span>{textBefore}</span>
-                  <span className="terminal-block-cursor select-none font-bold">
-                    {charAtCursor === " " ? "\u00A0" : charAtCursor}
-                  </span>
-                  <span>{textAfter}</span>
-                  {caretIndex === input.length && ghostText && (
-                    <span className="text-text-muted select-none font-mono">{ghostText}</span>
+                <div className="flex-1 relative flex items-center ml-1.5 overflow-hidden">
+                  <input
+                    ref={inputRef}
+                    type="text"
+                    value={input}
+                    onChange={handleInputChange}
+                    onKeyDown={handleKeyDown}
+                    className="w-full bg-transparent border-0 outline-none p-0 m-0 font-mono text-xs text-text-primary caret-accent-amber relative z-10 select-text"
+                    autoComplete="off"
+                    autoCorrect="off"
+                    autoCapitalize="off"
+                    spellCheck="false"
+                    autoFocus
+                  />
+                  {ghostText && (
+                    <div className="absolute left-0 top-0 pointer-events-none text-text-muted font-mono text-xs select-none whitespace-pre">
+                      <span className="opacity-0">{input}</span>
+                      <span>{ghostText}</span>
+                    </div>
                   )}
                 </div>
               </div>
