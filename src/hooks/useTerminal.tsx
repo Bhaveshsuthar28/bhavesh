@@ -277,7 +277,7 @@ export function useTerminal(
   };
 
   const getCommandsForContext = (stack: string[] = pathStack) => {
-    const baseCommands = [
+    return [
       "help",
       "about",
       "experience",
@@ -295,12 +295,6 @@ export function useTerminal(
       "tree",
       "cat"
     ];
-
-    const node = findNode(virtualFS, stack);
-    if (node && node.children) {
-      return [...baseCommands, ...Object.keys(node.children)];
-    }
-    return baseCommands;
   };
 
   // Sync cursor selection range natively
@@ -356,10 +350,7 @@ export function useTerminal(
     ];
 
     if (args.length === 1 && !trimmed.endsWith(" ")) {
-      const avail = [
-        ...baseCommands,
-        ...Object.keys(activeNode?.children || {})
-      ];
+      const avail = getCommandsForContext(activeStack);
       const match = avail.find((c) => c.startsWith(cmd) && c !== cmd);
       if (match) {
         setGhostText(match.slice(cmd.length));
@@ -367,21 +358,67 @@ export function useTerminal(
       }
     } else if (cmd === "cd" && args.length === 2 && args[1].length > 0) {
       const folderArg = args[1];
-      const children = activeNode?.children || {};
-      const availDirs = Object.keys(children).filter((k) => children[k].type === "directory");
-      const match = availDirs.find((s) => s.startsWith(folderArg) && s !== folderArg);
-      if (match) {
-        setGhostText(match.slice(folderArg.length));
-        return;
+      const pathParts = folderArg.split("/");
+      const typing = pathParts.pop() || "";
+      
+      let parentStack = [...activeStack];
+      let validParent = true;
+      
+      for (const p of pathParts) {
+        let name = p;
+        if (parentStack.length === 2 && parentStack[1] === "projects" && projectIndexMap[p]) {
+          name = projectIndexMap[p];
+        }
+        const node = findNode(virtualFS, parentStack);
+        if (node && node.children && node.children[name] && node.children[name].type === "directory") {
+          parentStack.push(name);
+        } else {
+          validParent = false;
+          break;
+        }
+      }
+
+      if (validParent) {
+        const targetNode = findNode(virtualFS, parentStack);
+        const children = targetNode?.children || {};
+        const availDirs = Object.keys(children).filter((k) => children[k].type === "directory");
+        const match = availDirs.find((s) => s.startsWith(typing) && s !== typing);
+        if (match) {
+          setGhostText(match.slice(typing.length));
+          return;
+        }
       }
     } else if (cmd === "cat" && args.length === 2 && args[1].length > 0) {
       const fileArg = args[1];
-      const children = activeNode?.children || {};
-      const availFiles = Object.keys(children).filter((k) => children[k].type === "file");
-      const match = availFiles.find((s) => s.startsWith(fileArg) && s !== fileArg);
-      if (match) {
-        setGhostText(match.slice(fileArg.length));
-        return;
+      const pathParts = fileArg.split("/");
+      const typing = pathParts.pop() || "";
+      
+      let parentStack = [...activeStack];
+      let validParent = true;
+      
+      for (const p of pathParts) {
+        let name = p;
+        if (parentStack.length === 2 && parentStack[1] === "projects" && projectIndexMap[p]) {
+          name = projectIndexMap[p];
+        }
+        const node = findNode(virtualFS, parentStack);
+        if (node && node.children && node.children[name] && node.children[name].type === "directory") {
+          parentStack.push(name);
+        } else {
+          validParent = false;
+          break;
+        }
+      }
+
+      if (validParent) {
+        const targetNode = findNode(virtualFS, parentStack);
+        const children = targetNode?.children || {};
+        const availFiles = Object.keys(children).filter((k) => children[k].type === "file");
+        const match = availFiles.find((s) => s.startsWith(typing) && s !== typing);
+        if (match) {
+          setGhostText(match.slice(typing.length));
+          return;
+        }
       }
     }
 
@@ -487,21 +524,70 @@ export function useTerminal(
     let isCatAutocomplete = (cmd === "cat" && args.length === 2) || (cmd === "cat" && args.length === 1 && activeSegment.endsWith(" "));
 
     if (isCommandAutocomplete) {
-      const avail = [
-        ...baseCommands,
-        ...Object.keys(activeNode?.children || {})
-      ];
+      const avail = getCommandsForContext(activeStack);
       matches = avail.filter((c) => c.startsWith(cmd));
     } else if (isCdAutocomplete) {
       const folderArg = args[1] || "";
-      const children = activeNode?.children || {};
-      const availDirs = Object.keys(children).filter((k) => children[k].type === "directory");
-      matches = availDirs.filter((s) => s.startsWith(folderArg));
+      const pathParts = folderArg.split("/");
+      const typing = pathParts.pop() || "";
+      
+      let parentStack = [...activeStack];
+      let validParent = true;
+      
+      for (const p of pathParts) {
+        let name = p;
+        if (parentStack.length === 2 && parentStack[1] === "projects" && projectIndexMap[p]) {
+          name = projectIndexMap[p];
+        }
+        const node = findNode(virtualFS, parentStack);
+        if (node && node.children && node.children[name] && node.children[name].type === "directory") {
+          parentStack.push(name);
+        } else {
+          validParent = false;
+          break;
+        }
+      }
+
+      if (validParent) {
+        const targetNode = findNode(virtualFS, parentStack);
+        const children = targetNode?.children || {};
+        const availDirs = Object.keys(children).filter((k) => children[k].type === "directory");
+        matches = availDirs.filter((s) => s.startsWith(typing)).map((s) => {
+          const prefix = pathParts.length > 0 ? pathParts.join("/") + "/" : "";
+          return prefix + s;
+        });
+      }
     } else if (isCatAutocomplete) {
       const fileArg = args[1] || "";
-      const children = activeNode?.children || {};
-      const availFiles = Object.keys(children).filter((k) => children[k].type === "file");
-      matches = availFiles.filter((s) => s.startsWith(fileArg));
+      const pathParts = fileArg.split("/");
+      const typing = pathParts.pop() || "";
+      
+      let parentStack = [...activeStack];
+      let validParent = true;
+      
+      for (const p of pathParts) {
+        let name = p;
+        if (parentStack.length === 2 && parentStack[1] === "projects" && projectIndexMap[p]) {
+          name = projectIndexMap[p];
+        }
+        const node = findNode(virtualFS, parentStack);
+        if (node && node.children && node.children[name] && node.children[name].type === "directory") {
+          parentStack.push(name);
+        } else {
+          validParent = false;
+          break;
+        }
+      }
+
+      if (validParent) {
+        const targetNode = findNode(virtualFS, parentStack);
+        const children = targetNode?.children || {};
+        const availFiles = Object.keys(children).filter((k) => children[k].type === "file");
+        matches = availFiles.filter((s) => s.startsWith(typing)).map((s) => {
+          const prefix = pathParts.length > 0 ? pathParts.join("/") + "/" : "";
+          return prefix + s;
+        });
+      }
     }
 
     if (matches.length === 0) return;
