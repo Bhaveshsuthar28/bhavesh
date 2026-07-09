@@ -1,0 +1,171 @@
+@import "tailwindcss";
+
+:root {
+  --background: #16212c;
+  --foreground: #d8dee9;
+  
+  --bg-primary: #16212c;
+  --bg-secondary: #1c2733;
+  --bg-tertiary: #26313d;
+  --bg-tabs: #16212c;
+  
+  --bg-window-chrome: #1c2733;
+  --bg-address-pill: #26313d;
+  
+  --accent-amber: #e3a869;
+  --accent-green: #8fd08a;
+  
+  --accent: #e3a869;
+  --accent-dim: rgba(227, 168, 105, 0.08);
+  --accent-glow: rgba(227, 168, 105, 0.25);
+  --border-color: #26313d;
+  
+  --text-muted: #7d8b99;
+  --text-primary: #d8dee9;
+  --text-bright: #f2f4f8;
+  --ascii-color: #cdd3d9;
+  
+  /* Additional terminal colors for rich highlights */
+  --terminal-purple: #b48ead;
+  --terminal-cyan: #88c0d0;
+  --terminal-orange: #d08770;
+  --terminal-red: #bf616a;
+}
+
+@theme {
+  --color-bg-primary: var(--bg-primary);
+  --color-bg-secondary: var(--bg-secondary);
+  --color-bg-tertiary: var(--bg-tertiary);
+  --color-bg-tabs: var(--bg-tabs);
+  --color-bg-window-chrome: var(--bg-window-chrome);
+  --color-bg-address-pill: var(--bg-address-pill);
+  --color-accent: var(--accent);
+  --color-accent-amber: var(--accent-amber);
+  --color-accent-green: var(--accent-green);
+  --color-accent-dim: var(--accent-dim);
+  --color-accent-glow: var(--accent-glow);
+  --color-border-terminal: var(--border-color);
+  --color-text-muted: var(--text-muted);
+  --color-text-primary: var(--text-primary);
+  --color-text-bright: var(--text-bright);
+  --color-ascii-color: var(--ascii-color);
+  --font-mono: var(--font-jetbrains-mono), monospace;
+  
+  --color-terminal-purple: var(--terminal-purple);
+  --color-terminal-cyan: var(--terminal-cyan);
+  --color-terminal-orange: var(--terminal-orange);
+  --color-terminal-red: var(--terminal-red);
+}
+
+
+/* Force monospace font everywhere */
+* {
+  font-family: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* Custom premium terminal scrollbars */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(125, 139, 153, 0.25) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(125, 139, 153, 0.25);
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-amber);
+}
+
+
+/* Terminal terminal glow and caret animation */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.terminal-caret {
+  display: inline-block;
+  width: 8px;
+  height: 15px;
+  background-color: var(--accent);
+  margin-left: 4px;
+  vertical-align: middle;
+  animation: blink 1s step-end infinite;
+}
+
+.terminal-block-cursor {
+  background-color: var(--accent);
+  color: var(--bg-primary);
+  animation: blink 1s step-end infinite;
+}
+
+/* Text selections matching terminal */
+::selection {
+  background-color: var(--accent-glow);
+  color: var(--text-bright);
+}
+
+.terminal-link {
+  color: var(--accent-amber);
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--accent-amber);
+  transition: all 0.15s ease-in-out;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  padding: 0;
+  display: inline;
+}
+
+.terminal-link:hover {
+  color: var(--text-bright);
+  text-decoration-color: var(--text-bright);
+}
+
+
+/* Glowing text */
+.text-glow {
+  text-shadow: 0 0 8px var(--accent-glow);
+}
+
+.border-glow {
+  transition: all 0.2s ease-in-out;
+}
+
+.border-glow:hover {
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 10px var(--accent-dim);
+}
+
+/* Custom style to look like scanner line (static, thin) */
+.crt-line {
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%, 
+    rgba(0, 0, 0, 0.25) 50%
+  );
+  background-size: 100% 4px;
+  z-index: 10;
+}
+
