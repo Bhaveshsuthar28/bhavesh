@@ -43,7 +43,7 @@ export const socialLinks: SocialLinks = {
   leetcode: "https://leetcode.com/u/Bhavesh_s_k",
   codolio: "https://codolio.com/profile/Bhavesh_S_K28",
   email: "bhavesh.suthar.ai@gmail.com",
-  resume: "/resume.pdf", // User can place their resume.pdf in public folder
+  resume: "https://ik.imagekit.io/z124gop4xq/Bhavesh_Suthar_Resume_SDE.pdf",
 };
 
 export const bioData = {
