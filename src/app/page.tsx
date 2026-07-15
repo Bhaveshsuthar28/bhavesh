@@ -306,7 +306,7 @@ export default function Home() {
 
                   {/* Stderr/Stdout Print block */}
                   {entry.output && (
-                    <div className="text-text-primary text-xs leading-relaxed">
+                    <div className="text-text-primary text-xs leading-relaxed font-mono">
                       <TypewriterContainer>{entry.output}</TypewriterContainer>
                     </div>
                   )}

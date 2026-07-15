@@ -1,13 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-
-const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-jetbrains-mono",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800"],
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: "Bhavesh Suthar | AI/ML Engineer & Backend Developer",
@@ -39,7 +31,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${jetbrainsMono.variable} h-full`}
+      className="h-full"
     >
       <body className="min-h-full flex flex-col bg-bg-primary text-text-primary selection:bg-accent selection:text-bg-primary">
         {children}

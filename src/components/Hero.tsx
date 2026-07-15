@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { FileText, Mail, ExternalLink, Terminal } from "lucide-react";
+import { FileText, Mail, ExternalLink, Terminal, Download } from "lucide-react";
 import { bioData, socialLinks } from "@/data/portfolio";
 
 const GithubIcon = ({ size = 14, className = "" }: { size?: number; className?: string }) => (
@@ -95,16 +95,48 @@ export default function Hero() {
 
         {/* CTA Buttons - Styled as Terminal Commands */}
         <div className="pt-6 flex flex-wrap gap-4">
-          <a
-            href={socialLinks.resume}
+          <motion.a
+            href={`${socialLinks.resume}?ik-attachment=true`}
+            download="Bhavesh_Suthar_Resume_SDE.pdf"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 px-4 py-2 border border-accent/30 bg-accent-dim text-accent hover:border-accent hover:bg-accent/20 transition-all rounded font-mono text-sm group"
+            className="flex items-center gap-2 px-4 py-2 border border-accent/30 bg-accent-dim text-accent hover:border-accent hover:bg-accent/25 transition-all rounded font-mono text-sm group relative overflow-hidden cursor-pointer"
+            variants={{
+              rest: {
+                scale: 1,
+                boxShadow: "0 0 0px rgba(0,0,0,0)",
+                borderColor: "rgba(227, 168, 105, 0.3)"
+              },
+              hover: { 
+                scale: 1.02,
+                boxShadow: "0 0 15px var(--accent-glow)",
+                borderColor: "var(--accent)"
+              }
+            }}
+            whileTap={{ scale: 0.98 }}
+            initial="rest"
+            animate="rest"
+            whileHover="hover"
           >
             <span className="text-text-muted group-hover:text-accent transition-colors select-none">$</span>
             <span>cat resume.pdf</span>
-            <FileText size={14} className="opacity-75" />
-          </a>
+            <motion.span
+              variants={{
+                rest: { y: 0 },
+                hover: { 
+                  y: [0, 3, 0],
+                  transition: { 
+                    repeat: Infinity,
+                    duration: 0.8,
+                    ease: "easeInOut"
+                  } 
+                }
+              }}
+              className="flex items-center"
+            >
+              <Download size={14} className="opacity-75" />
+            </motion.span>
+          </motion.a>
 
           <a
             href={socialLinks.github}

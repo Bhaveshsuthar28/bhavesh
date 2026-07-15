@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
 
 :root {
@@ -49,7 +50,8 @@
   --color-text-primary: var(--text-primary);
   --color-text-bright: var(--text-bright);
   --color-ascii-color: var(--ascii-color);
-  --font-mono: var(--font-jetbrains-mono), monospace;
+  --font-sans: 'Outfit', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
   
   --color-terminal-purple: var(--terminal-purple);
   --color-terminal-cyan: var(--terminal-cyan);
@@ -58,19 +60,25 @@
 }
 
 
-/* Force monospace font everywhere */
+/* Enable normal font inheritance and smooth transitions */
 * {
-  font-family: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
+  font-family: inherit;
   transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease, text-shadow 0.4s ease, box-shadow 0.4s ease, fill 0.4s ease, stroke 0.4s ease;
 }
 
 body {
+  font-family: var(--font-sans);
   background-color: var(--bg-primary);
   color: var(--text-primary);
   min-height: 100vh;
   margin: 0;
   padding: 0;
   overflow-x: hidden;
+}
+
+/* Ensure code blocks, terminal components, inputs, and elements with .font-mono class use monospace */
+pre, code, kbd, samp, .font-mono, input, textarea {
+  font-family: var(--font-mono);
 }
 
 /* Custom premium terminal scrollbars */
